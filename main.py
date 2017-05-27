@@ -1,15 +1,15 @@
 from const import *
 from data import *
-from net import *
+from graph import *
 
 
 data, labels = get_data(SOURCE_DIR, LABELS_FILE, BATCH_DATA_SIZE, IMG_SHAPE)
 
 desired_loss = 0.001
-current_rate = 0.000001
+current_rate = 0.001
 
 x = tf.placeholder(tf.float32, IN_SHAPE)
-prediction, output = get_net(x)
+prediction, output = get_graph(x, [32, 64, 126, 512], 5)
 
 correct = tf.constant(labels, dtype=tf.int64)
 
@@ -38,8 +38,6 @@ with tf.Session() as sess:
         _, l, a, p, c, o = sess.run([train, loss, accuracy, prediction, correct, output], feed_dict={x: data, rate: current_rate})
 
         print(i, ". Loss: ", l, ", accuracy: ", a, ", rate: ", current_rate)
-        print("Prediction: ", p)
-        print("Correct:  :", c)
 
         if j % 500 == 0:
             current_rate *= 0.99
