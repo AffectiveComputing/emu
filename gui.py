@@ -25,6 +25,8 @@ class Gui(tk.Frame):
     # Image label constant size.
     __PREVIEW_WIDTH = 500
     __PREVIEW_HEIGHT = 500
+    # Number of analyzed classes.
+    __NUMBER_OF_CLASSES = 7
 
     def __init__(self, master):
         super().__init__(master)
@@ -34,6 +36,7 @@ class Gui(tk.Frame):
         )
         self.__setup_layout()
         self.__create_widgets()
+        self.__set_results([0.0 for i in range(self.__NUMBER_OF_CLASSES)])
 
     def __setup_layout(self):
         """
@@ -57,25 +60,34 @@ class Gui(tk.Frame):
         self.__toolbox.grid_columnconfigure(
             0, minsize=0.25 * self.__WINDOW_WIDTH
         )
-        # Create and configure buttons and results frames.
+        # Create and configure buttons frame.
         self.__buttons = tk.Frame(self.__toolbox)
         self.__buttons.grid(row=0, sticky="news")
-        self.__buttons.grid_rowconfigure(
-            0, minsize=0.5 * 0.25 * self.__WINDOW_HEIGHT
-        )
-        self.__buttons.grid_rowconfigure(
-            1, minsize=0.5 * 0.25 * self.__WINDOW_HEIGHT
-        )
+        for i in range(2):
+            self.__buttons.grid_rowconfigure(
+                i, minsize=0.5 * 0.25 * self.__WINDOW_HEIGHT
+            )
         self.__buttons.grid_columnconfigure(
             0, minsize=0.25 * self.__WINDOW_WIDTH
         )
+        # Create and configure results frame.
         self.__results = tk.Frame(self.__toolbox)
         self.__results.grid(row=1, sticky="news")
+        for i in range(2):
+            self.__results.grid_columnconfigure(
+                i, minsize=0.5 * 0.25 * self.__WINDOW_WIDTH
+            )
+        for i in range(self.__NUMBER_OF_CLASSES):
+            self.__results.grid_rowconfigure(
+                i,
+                minsize=1 / self.__NUMBER_OF_CLASSES * 0.75
+                        * 0.5 * self.__WINDOW_HEIGHT
+            )
 
     def __create_widgets(self):
         """
-
-        :return:
+        Create necessary gui widgets.
+        :return: -
         """
         # Create image label and fill it with empty image.
         self.__image = tk.Label(self, borderwidth=2, relief="solid")
@@ -98,7 +110,17 @@ class Gui(tk.Frame):
         )
         self.__analyze_button.grid(row=1)
         # Setup results text.
-        # ...
+        self.__classes_headers = []
+        self.__classes_results = []
+        # Constant fill-in of result labels.
+        HEADER_TEXT = "Class {}"
+        for i in range(self.__NUMBER_OF_CLASSES):
+            header_label = tk.Label(self.__results, text=HEADER_TEXT.format(i))
+            header_label.grid(row=i, column=0)
+            result_label = tk.Label(self.__results)
+            result_label.grid(row=i, column=1)
+            self.__classes_headers.append(header_label)
+            self.__classes_results.append(result_label)
 
     def __open_image(self):
         """
@@ -129,12 +151,13 @@ class Gui(tk.Frame):
         """
         pass
 
-    def __set_results(self):
+    def __set_results(self, results):
         """
         Set results labels to given values.
         :return: -
         """
-        pass
+        for i in range(len(results)):
+            self.__classes_results[i]["text"] = str(results[i])
 
 
 def main():
