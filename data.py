@@ -16,7 +16,7 @@ class DataSet(object):
             self.labels = list(zip(images, classes))
             shuffle(self.labels)
 
-    def get_data(self, size, shape):
+    def get_batch(self, size, shape):
         if len(self.labels) == 0:
             return None, None
 

@@ -37,39 +37,34 @@ class Model(object):
             sess.run(init_glob)
 
             epochs = 0
-            batches = 0
             to_decay = 1
             current_loss = float('Inf')
 
-            while 0 < data_set.size:
-                data, labels = data_set.get_data(batch_data_size, IMG_SHAPE)
-                batches += 1
+            while desired_loss < current_loss:
+                data, labels = data_set.get_batch(batch_data_size, IMG_SHAPE)
+                epochs += 1
+                to_decay += 1
 
-                while desired_loss < current_loss:
-                    epochs += 1
-                    to_decay += 1
+                _, current_loss, current_accuracy, _, _, _ = sess.run(
+                    [train, loss, accuracy, prediction, correct, output],
+                    feed_dict={
+                        x: data,
+                        rate: learning_rate,
+                        correct: labels
+                    })
 
-                    _, current_loss, a, p, c, o = sess.run(
-                        [train, loss, accuracy, prediction, correct, output],
-                        feed_dict={
-                            x: data,
-                            rate: learning_rate,
-                            correct: labels
-                        })
+                if self.logs:
+                    print("Iteration ", epochs)
+                    print("\tLoss ", current_loss)
+                    print("\tAccuracy", current_accuracy)
+                    print("\tLearning rate ", learning_rate)
 
-                    if self.logs:
-                        print("Iteration ", epochs)
-                        print("\tBatch ", batches)
-                        print("\tLoss ", current_loss)
-                        print("\tAccuracy", a)
-                        print("\tLearning rate ", learning_rate)
+                if to_decay == decay_interval:
+                    learning_rate *= decay_rate
+                    decay_rate = 0
 
-                    if to_decay == decay_interval:
-                        learning_rate *= decay_rate
-                        decay_rate = 0
-
-                    if max_epochs == epochs:
-                        break
+                if max_epochs == epochs:
+                    break
 
             sess.close()
 
