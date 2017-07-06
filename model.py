@@ -14,14 +14,15 @@ class Model(object):
         pass
 
     def train(self, data_set, learning_rate, desired_loss, max_epochs,
-              decay_interval, decay_rate):
+              decay_interval, decay_rate, batch_data_size):
 
         x = tf.placeholder(tf.float32, IN_SHAPE)
 
         #TODO make it not hard coded
         prediction, output = Net.build_net(x, [32, 64], [OUT_SIZE], 5)
 
-        correct = tf.placeholder(tf.int64, [BATCH_DATA_SIZE])
+        correct = tf.placeholder(tf.int64, [batch_data_size])
+
         loss = tf.reduce_mean(tf.abs(output - tf.one_hot(correct, OUT_SIZE)))
         accuracy = tf.reduce_mean(
             tf.cast(tf.equal(prediction, correct), dtype=tf.float32))
@@ -41,7 +42,7 @@ class Model(object):
             current_loss = float('Inf')
 
             while 0 < data_set.size:
-                data, labels = data_set.get_data(BATCH_DATA_SIZE, IMG_SHAPE)
+                data, labels = data_set.get_data(batch_data_size, IMG_SHAPE)
                 batches += 1
 
                 while desired_loss < current_loss:

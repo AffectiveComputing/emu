@@ -4,10 +4,10 @@ This module contains class responsible for graphics user interface.
 
 
 import tkinter as tk
-from tkinter.filedialog import askopenfilename
-from PIL import Image, ImageTk
 from os import path
+from tkinter.filedialog import askopenfilename
 
+from PIL import Image, ImageTk
 
 __author__ = "Michał Górecki"
 

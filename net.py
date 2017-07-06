@@ -3,9 +3,10 @@ import tensorflow as tf
 
 class Net(object):
 
+    @staticmethod
     def build_net(x, filter_sizes, deep_sizes, kernel_size):
 
-        conv_output = Net.build_conv_and_poll(x, filter_sizes, kernel_size)
+        conv_output = Net.__build_conv_and_poll(x, filter_sizes, kernel_size)
 
         # calculate conv and poll output assuming pool size [2, 2]
         x_shape = x.get_shape().as_list()
@@ -17,11 +18,12 @@ class Net(object):
         # change matrix to vector for feed-forward x
         ff_input = tf.reshape(conv_output, [-1, ff_input_size])
 
-        output = Net.build_feed_forward(ff_input, ff_input_size, deep_sizes)
+        output = Net.__build_feed_forward(ff_input, ff_input_size, deep_sizes)
 
         return tf.argmax(output, axis=1), output
 
-    def build_conv_and_poll(x, filter_sizes, kernel_size):
+    @staticmethod
+    def __build_conv_and_poll(x, filter_sizes, kernel_size):
 
         current_layer = x
 
@@ -43,7 +45,8 @@ class Net(object):
 
         return current_layer
 
-    def build_feed_forward(x, x_size, deep_sizes):
+    @staticmethod
+    def __build_feed_forward(x, x_size, deep_sizes):
 
         current_layer = x
 
