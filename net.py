@@ -47,7 +47,13 @@ class Net(object):
 
     @staticmethod
     def __build_feed_forward(x, x_size, deep_sizes):
-
+        """
+        Build fully-connected layer
+        :param x:
+        :param x_size:
+        :param deep_sizes:
+        :return:
+        """
         current_layer = x
 
         for deep_size, index in zip(deep_sizes, range(len(deep_sizes))):
@@ -65,6 +71,5 @@ class Net(object):
 
             current_layer = tf.matmul(current_layer, W) + b
             x_size = deep_size
-            index += 1
 
         return current_layer
