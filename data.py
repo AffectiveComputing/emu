@@ -1,28 +1,43 @@
-import os
+from random import shuffle
 
 import numpy as np
 
 
-def get_data(source_dir, labels_file, max_size, shape):
-    with open(labels_file) as f:
-        content = f.readlines()
-        keys = [x.strip().split()[0] for x in content]
-        values = [int(x.strip().split()[1]) for x in content]
-        labels_list = dict(zip(keys, values))
+class DataSet(object):
 
-    labels = np.empty(max_size)
-    data = np.empty((max_size,) + shape + (1,))
+    def __init__(self, src_dir, labels_file):
+        self.src_dir = src_dir
 
-    i = 0
-    for file in os.listdir(source_dir):
-        if file.endswith(".npy"):
-            img = np.load(source_dir + "/" + file)
-            if img.shape == shape:
-                data[i, :, :, 0] = img
-                labels[i] = labels_list.get(file)
-                i += 1
+        with open(labels_file) as f:
+            content = f.readlines()
+            images = [x.strip().split()[0] for x in content]
+            classes = [int(x.strip().split()[1]) for x in content]
 
-            if max_size <= i:
+            self.labels = list(zip(images, classes))
+            shuffle(self.labels)
+
+    def get_data(self, size, shape):
+        if len(self.labels) == 0:
+            return None, None
+
+        data = np.empty((size,) + shape)
+        labels = np.empty(size)
+
+        i = 0
+        while i < size:
+            if len(self.labels) == 0:
                 break
 
-    return data, labels
+            label = self.labels.pop()
+            img = np.load(self.src_dir + "/" + label[0])
+
+            if img.shape == shape:
+                data[i, :, :, :] = img
+                labels[i] = label[1]
+                i += 1
+
+        return data, labels
+
+    @property
+    def size(self):
+        return len(self.labels)

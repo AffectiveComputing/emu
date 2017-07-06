@@ -5,66 +5,81 @@ import matplotlib.image as mpimg
 import numpy as np
 from PIL import Image
 
-from const import WIDTH, HEIGHT
+img_formats = [".jpg", ".jpeg", ".JPG", ".JPEG", ".png", ".PNG",
+               ".bmp", ".BMP", ".tiff", ".TIFF", ".ico", ".ICO"]
+img_255_formats = [".jpg", ".jpeg", ".JPG", ".JPEG", ".bmp",
+                   ".BMP", ".tiff", ".TIFF", ".ico", ".ICO"]
 
-img_formats = [".jpg", ".jpeg", ".JPG", ".JPEG", ".png", ".PNG", ".bmp", ".BMP", ".tiff", ".TIFF", ".ico", ".ICO"]
-img_255_formats = [".jpg", ".jpeg", ".JPG", ".JPEG", ".bmp", ".BMP", ".tiff", ".TIFF", ".ico", ".ICO"]
 
+def export_as_np_array(src_dir, out_dir, gray_scale=False, scale=1.0):
+    """
+    Convert all images in src_dir into np arrays
+    and save them in out_dir.
 
-# convert all images in source_dir into np arrays
-# and export them into destination_dir
+    :param src_dir: a directory with images
+    :param out_dir: a directory where numpy arrays will be written to
+    :param gray_scale: True if images are to be converted to gray-scale
+    :param scale: scale by which pixel value must be multiplied
+    """
 
-def export_as_np_array(source_dir="", destination_dir="", grayscale=False, scale=1.0):
     # for all files in source_dir
-    for img_file in [join(source_dir, f) for f in listdir(source_dir) if is_img(join(source_dir, f))]:
+    for img_file in [join(src_dir, f)
+                     for f in listdir(src_dir) if is_img(join(src_dir, f))]:
 
         # convert image file to numpy array of fixed resolution
-        image = img_to_np(img_file, grayscale, scale)
+        image = img_to_np(img_file, gray_scale, scale)
 
-        # TODO this sucks
-        # check for files with the same base names
-        out_name = join(destination_dir, splitext(basename(img_file))[0])
-        while isfile(out_name + ".npy"):
-            print(out_name + ".npy appears more than once! Index '2' added.")
-            out_name += "2"
+        out_name = join(out_dir, splitext(basename(img_file))[0])
 
         # export obtained np array and save in destination_dir in .npy format
         np.save(out_name, image)
 
 
-# convert an image into np array
+def img_to_np(path, gray_scale=False, scale=1.0):
+    """
+    Convert an image into np array.
 
-def img_to_np(img_file, grayscale=False, scale=1.0):
+    :param path: path to an img
+    :param gray_scale: True if image is to be converted to gray-scale
+    :param scale: scale by which pixel value must be multiplied
+    :return: numpy array representing image
+    """
+
     # convert image file to numpy array
-    image = mpimg.imread(img_file)
+    img_as_np = mpimg.imread(path)
 
-    if grayscale and image.ndim == 3:
+    if gray_scale and img_as_np.ndim == 3:
         # get rid of alpha chanel
-        image = image[..., :3]
+        img_as_np = img_as_np[..., :3]
 
         # convert pixels from [R, G, B] format to [luminance] format
         # using common [0.299, 0.587, 0.114] YUV factor
-        image = np.dot(image, [0.299, 0.587, 0.114])
+        img_as_np = np.dot(img_as_np, [0.299, 0.587, 0.114])
 
-    # check if scale is needed in order to avoid computations
+    # check if scaling is needed
     if scale != 1.0:
-        image = np.dot(image, scale)
+        img_as_np = np.dot(img_as_np, scale)
 
     # change upper bound from 255 to 1. for JPG
-    if splitext(img_file)[1] in img_255_formats:
-        image *= 1. / 255
+    if splitext(path)[1] in img_255_formats:
+        img_as_np *= 1. / 255
 
-    return image
-
-
-def resize_img(source_dir, destination_dir, width=WIDTH, height=HEIGHT):
-    for filename in listdir(source_dir):
-        img = Image.open(join(source_dir, filename))
-        resized_image = img.resize((width, height), Image.ANTIALIAS)
-        resized_image.save(join(destination_dir, filename))
+    return img_as_np
 
 
-# check if a file exists and whether it has a proper extension
+def resize_img(src_dir, dest_dir, width, height):
+    for file in listdir(src_dir):
+        if is_img(join(src_dir, file)):
+            img = Image.open(join(src_dir, file))
+            resized_image = img.resize((width, height), Image.ANTIALIAS)
+            resized_image.save(join(dest_dir, file))
+
 
 def is_img(file_name):
+    """
+    Check if a file is an image.
+
+    :param file_name: of a checked file
+    :return: True if file exists and it has a proper image extension
+    """
     return isfile(file_name) and splitext(basename(file_name))[1] in img_formats
