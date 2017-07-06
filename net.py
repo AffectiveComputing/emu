@@ -28,7 +28,7 @@ class Net(object):
         for filter_size in filter_sizes:
 
             conv_layer = tf.layers.conv2d(
-                xs=current_layer,
+                inputs=current_layer,
                 filters=filter_size,
                 kernel_size=[kernel_size, kernel_size],
                 padding="same",
@@ -37,7 +37,7 @@ class Net(object):
             )
 
             current_layer = tf.layers.max_pooling2d(
-                xs=conv_layer,
+                inputs=conv_layer,
                 pool_size=[2, 2], strides=2
             )
 
