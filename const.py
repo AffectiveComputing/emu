@@ -1,7 +1,6 @@
 SOURCE_DIR = "npy"
 LABELS_FILE = "png/emotion.txt"
 
-BATCH_DATA_SIZE = 200
 CHANNELS = 3
 
 WIDTH = 128
