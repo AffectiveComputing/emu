@@ -3,6 +3,7 @@ import tensorflow as tf
 
 class Net(object):
 
+    @staticmethod
     def build_net(x, filter_sizes, deep_sizes, kernel_size):
 
         conv_output = Net.__build_conv_and_poll(x, filter_sizes, kernel_size)
@@ -21,6 +22,7 @@ class Net(object):
 
         return tf.argmax(output, axis=1), output
 
+    @staticmethod
     def __build_conv_and_poll(x, filter_sizes, kernel_size):
 
         current_layer = x
@@ -43,6 +45,7 @@ class Net(object):
 
         return current_layer
 
+    @staticmethod
     def __build_feed_forward(x, x_size, deep_sizes):
 
         current_layer = x
