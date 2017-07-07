@@ -19,8 +19,10 @@ class Net(object):
         ff_input = tf.reshape(conv_output, [-1, ff_input_size])
 
         output = Net.__build_feed_forward(ff_input, ff_input_size, deep_sizes)
+        predictions = tf.argmax(output, axis=1)
+        scores = tf.nn.softmax(output)
 
-        return tf.argmax(output, axis=1), output
+        return predictions, output, scores
 
     @staticmethod
     def __build_conv_and_poll(x, filter_sizes, kernel_size):

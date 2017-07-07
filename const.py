@@ -1,4 +1,8 @@
 SOURCE_DIR = "npy"
+
+META_FILE = "models/model.meta"
+MODEL_FILE = "models/model"
+CHECKPOINTS_FILE = "checkpoints/models"
 LABELS_FILE = "png/emotion.txt"
 
 CHANNELS = 3
@@ -8,5 +12,5 @@ HEIGHT = 128
 IMG_SHAPE = (HEIGHT, WIDTH, CHANNELS)
 IN_SHAPE = (None, HEIGHT, WIDTH, CHANNELS)
 
-OUT_SIZE = 7
-OUT_SHAPE = OUT_SIZE
+CLASSES_NUM = 7
+OUT_SHAPE = CLASSES_NUM

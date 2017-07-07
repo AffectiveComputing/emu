@@ -5,7 +5,7 @@ import numpy as np
 
 class DataSet(object):
 
-    def __init__(self, src_dir, labels_file):
+    def __init__(self, src_dir, labels_file, shuffled = True):
         self.src_dir = src_dir
 
         with open(labels_file) as f:
@@ -14,9 +14,11 @@ class DataSet(object):
             classes = [int(x.strip().split()[1]) for x in content]
 
             self.labels = list(zip(images, classes))
-            shuffle(self.labels)
 
-    def get_batch(self, size, shape):
+            if shuffled:
+                shuffle(self.labels)
+
+    def get_data(self, size, shape):
         if len(self.labels) == 0:
             return None, None
 

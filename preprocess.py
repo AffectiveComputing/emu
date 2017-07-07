@@ -11,7 +11,7 @@ img_255_formats = [".jpg", ".jpeg", ".JPG", ".JPEG", ".bmp",
                    ".BMP", ".tiff", ".TIFF", ".ico", ".ICO"]
 
 
-def export_as_np_array(src_dir, out_dir, gray_scale=False, scale=1.0):
+def export_as_np_in_dir(src_dir, out_dir, gray_scale=False, scale=1.0):
     """
     Convert all images in src_dir into np arrays
     and save them in out_dir.
@@ -67,12 +67,16 @@ def img_to_np(path, gray_scale=False, scale=1.0):
     return img_as_np
 
 
-def resize_img(src_dir, dest_dir, width, height):
+def resize_img_in_dir(src_dir, dest_dir, width, height):
     for file in listdir(src_dir):
         if is_img(join(src_dir, file)):
             img = Image.open(join(src_dir, file))
-            resized_image = img.resize((width, height), Image.ANTIALIAS)
+            resized_image = resize_img(img, width, height)
             resized_image.save(join(dest_dir, file))
+
+
+def resize_img(img, width, height):
+    return img.resize((width, height), Image.ANTIALIAS)
 
 
 def is_img(file_name):

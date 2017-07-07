@@ -9,6 +9,10 @@ from tkinter.filedialog import askopenfilename
 
 from PIL import Image, ImageTk
 
+from const import WIDTH, HEIGHT, META_FILE, MODEL_FILE
+from model import Model
+from preprocess import img_to_np, resize_img
+
 __author__ = "Michał Górecki"
 
 
@@ -37,6 +41,9 @@ class Gui(tk.Frame):
         self.__setup_layout()
         self.__create_widgets()
         self.__set_results([0.0 for i in range(self.__NUMBER_OF_CLASSES)])
+
+        self.__model = Model()
+        self.__image_path = None
 
     def __setup_layout(self):
         """
@@ -127,9 +134,9 @@ class Gui(tk.Frame):
         Handle open image button press.
         :return: -
         """
-        image_path = askopenfilename()
-        if image_path and path.isfile(image_path):
-            image = self.__load_image(image_path)
+        self.__image_path = askopenfilename()
+        if self.__image_path and path.isfile(self.__image_path ):
+            image = self.__load_image(self.__image_path )
             self.__image.config(image=image)
             self.__image.image = image
 
@@ -149,15 +156,23 @@ class Gui(tk.Frame):
         Analyze loaded image with conv-net and display results.
         :return: -
         """
-        pass
+        if self.__image_path:
+            img = Image.open(self.__image_path)
+            resized_image = resize_img(img, WIDTH, HEIGHT)
+            resized_image.save("tmp/1.png")
+            input = [img_to_np("tmp/1.png")]
+
+            scores = self.__model.infer(input, META_FILE, MODEL_FILE)[0]
+            self.__set_results(scores)
+
 
     def __set_results(self, results):
         """
         Set results labels to given values.
         :return: -
         """
-        for i in range(len(results)):
-            self.__classes_results[i]["text"] = str(results[i])
+        for i, j in enumerate(results):
+            self.__classes_results[i]["text"] = str(j)
 
 
 def main():
