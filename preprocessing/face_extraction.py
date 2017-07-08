@@ -69,23 +69,39 @@ def extract_faces(cascade, image, verify, scale_factor=1.05, min_neighbours=5):
 def export_faces_from_file(cascade, in_path, out_path, verify):
     """
     Export faces from a single input image file.
+    :param cascade: cascade detection object
     :param in_path: path to the input file
     :param out_path: path to the output directory
     :param verify: boolean used to activate results verification
     :return: -
     """
     image = cv2.imread(in_path)
+    if image is None:
+        return
     # If image was successfully read, extract faces from it and save to the
     # separate files in the output directory.
-    if not image is None:
-        filename, extension = path.splitext(path.basename(in_path))
-        faces = extract_faces(cascade, image, verify)
-        for face, i in zip(faces, range(len(faces))):
-            cv2.imwrite(
-                path.join(out_path, filename + "_{}".format(i) + extension),
-                face
-            )
+    filename, extension = path.splitext(path.basename(in_path))
+    faces = extract_faces(cascade, image, verify)
+    for face, i in zip(faces, range(len(faces))):
+        cv2.imwrite(
+            path.join(out_path, filename + "_{}".format(i) + extension), face
+        )
 
+
+def export_faces_from_directory(cascade, in_path, out_path, verify):
+    """
+    Export faces from every image file contained in source directory.
+    :param cascade: cascade detection object
+    :param in_path: path to the input directory
+    :param out_path: path to the output directory
+    :param verify: boolean used to activate results verification
+    :return: -
+    """
+    # Export faces from all files in the source directory.
+    for filename in listdir(in_path):
+        export_faces_from_file(
+            cascade, path.join(in_path, filename), out_path, verify
+        )
 
 def create_parser():
     """
@@ -113,7 +129,7 @@ def create_parser():
         help="Path to the cascade xml file used in detection on faces."
     )
     parser.add_argument(
-        "-v", "--verification", action="store_true",
+        "-ver", "--verification", action="store_true",
         help="States if extraction results should be displayed for "
              "verification purposes. In this mode pressing \"y\" accepts "
              "detection results and saves extracted faces. Pressing anything "
@@ -140,11 +156,10 @@ def main():
         )
     # Else convert all files in the given directory path.
     elif path.isdir(arguments.in_path):
-        for filename in listdir(arguments.in_path):
-            export_faces_from_file(
-                cascade, path.join(arguments.in_path, filename),
-                arguments.out_path, arguments.verification
-            )
+        export_faces_from_directory(
+            cascade, arguments.in_path, arguments.out_path,
+            arguments.verification
+        )
 
 
 if __name__ == "__main__":
