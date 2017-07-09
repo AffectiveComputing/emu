@@ -9,9 +9,7 @@ from tkinter.filedialog import askopenfilename
 
 from PIL import Image, ImageTk
 
-from const import WIDTH, HEIGHT, META_FILE, MODEL_FILE
-from model import Model
-from preprocess import img_to_np, resize_img
+from model_building.model import Model
 
 __author__ = "Michał Górecki"
 
@@ -156,14 +154,14 @@ class Gui(tk.Frame):
         Analyze loaded image with conv-net and display results.
         :return: -
         """
-        if self.__image_path:
-            img = Image.open(self.__image_path)
-            resized_image = resize_img(img, WIDTH, HEIGHT)
-            resized_image.save("tmp/1.png")
-            input = [img_to_np("tmp/1.png")]
-
-            scores = self.__model.infer(input, META_FILE, MODEL_FILE)[0]
-            self.__set_results(scores)
+        # if self.__image_path:
+        #     img = Image.open(self.__image_path)
+        #     resized_image = resize_img(img, WIDTH, HEIGHT)
+        #     resized_image.save("tmp/1.png")
+        #     input = [img_to_np("tmp/1.png")]
+        #
+        #     scores = self.__model.infer(input, META_FILE, MODEL_FILE)[0]
+        #     self.__set_results(scores)
 
 
     def __set_results(self, results):

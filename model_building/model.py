@@ -6,8 +6,8 @@ This module is responsible for model control.
 import numpy as np
 import tensorflow as tf
 
-from const import *
-from net import Net
+from model_building.const import *
+from model_building.net import Net
 
 __author__ = ["Paweł Kopeć", "Michał Górecki"]
 
@@ -65,7 +65,7 @@ class Model(object):
         with tf.Session() as session:
             session.run(tf.global_variables_initializer())
 
-            writer = tf.summary.FileWriter("logs")
+            writer = tf.summary.FileWriter("data/logs")
             checkpoints_saver = tf.train.Saver(max_to_keep=10)
             model_saver = tf.train.Saver(max_to_keep=1)
 

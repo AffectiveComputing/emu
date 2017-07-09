@@ -48,7 +48,7 @@ def add_detection_group(parser):
     )
     detection_group.add_argument(
         "-c_path", "--cascade_path",
-        type=str, default="cascades/haarcascade_frontalface_default.xml",
+        type=str, default="data/cascades/haarcascade_frontalface_default.xml",
         help="Path to the used xml cascade file."
     )
     detection_group.add_argument(
