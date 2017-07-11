@@ -1,77 +1,66 @@
+import numpy as np
 import tensorflow as tf
 
+__author__ = ["Michał Górecki", "Paweł Kopeć"]
 
-class Net(object):
+DEFAULT_FILTERS_COUNT = 1
+DEFAULT_KERNEL_SIZE = 5
+DEFAULT_POOL_SIZE = 2
+DEFAULT_STRIDES = 2
+DEFAULT_DEEP_SIZE = 128
 
-    @staticmethod
-    def build_net(x, filter_sizes, deep_sizes, kernel_size):
 
-        conv_output = Net.__build_conv_and_poll(x, filter_sizes, kernel_size)
+def net(x, layers):
+    for i, layer in enumerate(layers):
+        layer_type = layer.get("type")
 
-        # calculate conv and poll output assuming pool size [2, 2]
-        x_shape = x.get_shape().as_list()
-        traits_num = x_shape[1] * x_shape[2] * filter_sizes[-1]
+        if layer_type is "deep":
+            break
+        elif layer_type is "conv":
+            filters_count = layer.get("filters_count") or DEFAULT_FILTERS_COUNT
+            kernel_size = layer.get("kernel_size") or DEFAULT_KERNEL_SIZE
 
-        # every polling layer decreases size by 4
-        ff_input_size = traits_num // (4 ** len(filter_sizes))
-
-        # change matrix to vector for feed-forward x
-        ff_input = tf.reshape(conv_output, [-1, ff_input_size])
-
-        output = Net.__build_feed_forward(ff_input, ff_input_size, deep_sizes)
-        predictions = tf.argmax(output, axis=1)
-        scores = tf.nn.softmax(output)
-
-        return predictions, output, scores
-
-    @staticmethod
-    def __build_conv_and_poll(x, filter_sizes, kernel_size):
-
-        current_layer = x
-
-        for filter_size in filter_sizes:
-
-            conv_layer = tf.layers.conv2d(
-                inputs=current_layer,
-                filters=filter_size,
+            x = tf.layers.conv2d(
+                inputs=x,
+                filters=filters_count,
                 kernel_size=[kernel_size, kernel_size],
                 padding="same",
                 activation=tf.nn.relu
+            )
+        elif layer_type is "pool":
+            poll_size = layer.get("pool_size") or DEFAULT_POOL_SIZE
+            strides = layer.get("strides") or DEFAULT_STRIDES
 
+            x = tf.layers.max_pooling2d(
+                inputs=x,
+                pool_size=poll_size,
+                strides=strides
             )
 
-            current_layer = tf.layers.max_pooling2d(
-                inputs=conv_layer,
-                pool_size=[2, 2], strides=2
-            )
+    in_size = np.product(x.get_shape().as_list()[1:])
+    x = tf.reshape(x, [-1, in_size])
 
-        return current_layer
+    for j, layer in enumerate(layers[i:]):
+        out_size = layer.get("out_size") or DEFAULT_DEEP_SIZE
+        x = deep(x, in_size, out_size, j)
+        in_size = out_size
 
-    @staticmethod
-    def __build_feed_forward(x, x_size, deep_sizes):
-        """
-        Build fully-connected layer
-        :param x:
-        :param x_size:
-        :param deep_sizes:
-        :return:
-        """
-        current_layer = x
+    return x
 
-        for deep_size, index in zip(deep_sizes, range(len(deep_sizes))):
-            W = tf.get_variable(
-                "W" + str(index),
-                shape=[x_size, deep_size],
-                initializer=tf.contrib.layers.xavier_initializer()
-            )
 
-            b = tf.get_variable(
-                "b" + str(index),
-                shape=[deep_size, ],
-                initializer=tf.constant_initializer()
-            )
+def deep(x, in_size, out_size, index):
+    x = tf.nn.relu(x)
 
-            current_layer = tf.matmul(current_layer, W) + b
-            x_size = deep_size
+    W = tf.get_variable(
+        "W" + str(index),
+        shape=[in_size, out_size],
+        initializer=tf.contrib.layers.xavier_initializer()
+    )
 
-        return current_layer
+    b = tf.get_variable(
+        "b" + str(index),
+        shape=[out_size, ],
+        initializer=tf.constant_initializer()
+    )
+
+    return tf.matmul(x, W) + b

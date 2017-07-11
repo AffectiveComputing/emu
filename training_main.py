@@ -11,7 +11,31 @@ def main():
     model.logs = True
     data_set = DataSet(SOURCE_DIR, LABELS_FILE)
 
-    model.train(data_set, 0.003, 0.001, 100000, 5, 0.99, 100, 5, 20)
+    layers = [
+        {
+            "type": "conv",
+            "filters_count": 32,
+            "kernel_size": 5,
+        },
+        {
+            "type": "pool"
+        },
+        {
+            "type": "conv",
+            "filters_count": 128,
+            "kernel_size": 5,
+        },
+        {
+            "type": "deep",
+            "out_size": 100
+        },
+        {
+            "type": "deep",
+            "out_size": 7
+        }
+    ]
+
+    model.train(data_set, 0.003, 0.001, 100000, 5, 0.99, 100, 5, 20, layers)
 
 
 if __name__ == "__main__":

@@ -7,7 +7,7 @@ import numpy as np
 import tensorflow as tf
 
 from model.const import *
-from model.net import Net
+from model.net import net
 
 __author__ = ["Paweł Kopeć", "Michał Górecki"]
 
@@ -32,7 +32,7 @@ class Model(object):
     def train(
         self, data_set, learning_rate, desired_loss, max_epochs,
             decay_interval, decay_rate, batch_size, save_interval,
-            best_save_interval
+            best_save_interval, net_architecture
     ):
         in_data = tf.placeholder(tf.float32, IN_SHAPE)
         tf.add_to_collection("in_data", in_data)
@@ -41,17 +41,19 @@ class Model(object):
         in_learning_rate = tf.placeholder(tf.float32, [])
 
         #TODO make it not hard coded
-        prediction, output, scores = Net.build_net(in_data, [32, 64], [CLASSES_NUM], 5)
+        output = net(in_data, net_architecture)
+        predictions = tf.argmax(output, axis=1)
+        scores = tf.nn.softmax(output)
         tf.add_to_collection("scores", scores)
 
         # Create loss, train, and accuracy nodes along with their summaries.
         loss = tf.reduce_mean(
             tf.nn.softmax_cross_entropy_with_logits(
-                logits=output, labels=tf.one_hot(in_labels, CLASSES_NUM)
+                logits=output, labels=tf.one_hot(in_labels, CLASSES_COUNT)
             )
         )
         accuracy = tf.reduce_mean(
-            tf.cast(tf.equal(prediction, in_labels), dtype=tf.float32)
+            tf.cast(tf.equal(predictions, in_labels), dtype=tf.float32)
         )
         train = tf.train.AdamOptimizer(
             learning_rate=in_learning_rate
@@ -70,7 +72,7 @@ class Model(object):
             model_saver = tf.train.Saver(max_to_keep=1)
 
             batches = 0
-            min_loss = -np.log(1 / CLASSES_NUM)
+            min_loss = -np.log(1 / CLASSES_COUNT)
 
             while 0 < data_set.size:
                 data, labels = data_set.get_data(batch_size, IMG_SHAPE)
