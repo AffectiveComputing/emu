@@ -10,6 +10,8 @@ from tkinter.filedialog import askopenfilename
 from PIL import Image, ImageTk
 
 from model.model import Model
+from preprocessing import image_utilities
+from model import const
 
 __author__ = ["Paweł Kopeć", "Michał Górecki"]
 
@@ -156,14 +158,17 @@ class Window(tk.Frame):
         Analyze loaded image with conv-net and display results.
         :return: -
         """
-        # if self.__image_path:
-        #     img = Image.open(self.__image_path)
-        #     resized_image = resize_img(img, WIDTH, HEIGHT)
-        #     resized_image.save("tmp/1.png")
-        #     input = [img_to_np("tmp/1.png")]
-        #
-        #     scores = self.__model.infer(input, META_FILE, MODEL_FILE)[0]
-        #     self.__set_results(scores)
+        CASCADE_PATH = "data/cascades/haarcascade_frontalface_default.xml"
+        if self.__image_path:
+             img = image_utilities.load_image(self.__image_path)
+             cascade = image_utilities.load_cascade(CASCADE_PATH)
+             input, _ = image_utilities.process_image(
+                 cascade, img, 1.05, 5, False, False, 0.1, True, False, (64, 64)
+             )
+             scores = self.__model.infer(
+                 input, const.META_FILE, const.MODEL_FILE
+             )[0]
+             self.__set_results(scores)
 
 
     def __set_results(self, results):

@@ -1,6 +1,6 @@
 
 from model.const import SOURCE_DIR, LABELS_FILE
-from model.dataset import DataSet
+from model.data_set import DataSet
 from model.model import Model
 
 __author__ = ["Paweł Kopeć", "Michał Górecki"]

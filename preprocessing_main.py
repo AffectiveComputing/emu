@@ -47,6 +47,7 @@ def main():
             base_filename + "_{}".format(i) for i in range(len(new_images))
         ]
         label = labels[base_filename]
+        labels.pop(base_filename, None)
         # Save transformed numpy matrices and result images for verification
         # purposes.
         for transformed_image, new_image, new_filename in \
