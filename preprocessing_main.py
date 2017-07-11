@@ -39,7 +39,7 @@ def main():
             cascade, image, arguments.scale_factor, arguments.min_neighbours,
             arguments.apply_flip, arguments.apply_noise,
             arguments.noise_intensity, arguments.grayscale, arguments.rgb,
-            arguments.target_size
+            tuple(arguments.target_size)
         )
         # Extract base filename and create list of the new filenames.
         base_filename, extension = path.splitext(filename)
