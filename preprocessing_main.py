@@ -12,7 +12,7 @@ from preprocessing import labels_handling
 from preprocessing import parser
 
 
-__author__ = ["Michał Górecki"]
+__author__ = ["Paweł Kopeć", "Michał Górecki"]
 
 
 def main():

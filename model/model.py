@@ -6,8 +6,8 @@ This module is responsible for model control.
 import numpy as np
 import tensorflow as tf
 
-from model_building.const import *
-from model_building.net import Net
+from model.const import *
+from model.net import Net
 
 __author__ = ["Paweł Kopeć", "Michał Górecki"]
 
