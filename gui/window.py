@@ -9,6 +9,7 @@ from tkinter.filedialog import askopenfilename
 
 from PIL import Image, ImageTk
 
+from model.const import CLASSES_COUNT
 from model.model import Model
 from preprocessing import image_utilities
 from model import const
@@ -27,8 +28,6 @@ class Window(tk.Frame):
     # Image label constant size.
     __PREVIEW_WIDTH = 500
     __PREVIEW_HEIGHT = 500
-    # Number of analyzed classes.
-    __NUMBER_OF_CLASSES = 7
 
     def __init__(self, master=None):
         if master is None:
@@ -42,7 +41,7 @@ class Window(tk.Frame):
         )
         self.__setup_layout()
         self.__create_widgets()
-        self.__set_results([0.0 for i in range(self.__NUMBER_OF_CLASSES)])
+        self.__set_results([0.0 for i in range(CLASSES_COUNT)])
 
         self.__model = Model()
         self.__image_path = None
@@ -86,10 +85,10 @@ class Window(tk.Frame):
             self.__results.grid_columnconfigure(
                 i, minsize=0.5 * 0.25 * self.__WINDOW_WIDTH
             )
-        for i in range(self.__NUMBER_OF_CLASSES):
+        for i in range(CLASSES_COUNT):
             self.__results.grid_rowconfigure(
                 i,
-                minsize=1 / self.__NUMBER_OF_CLASSES * 0.75
+                minsize=1 / CLASSES_COUNT * 0.75
                         * 0.5 * self.__WINDOW_HEIGHT
             )
 
@@ -123,7 +122,7 @@ class Window(tk.Frame):
         self.__classes_results = []
         # Constant fill-in of result labels.
         HEADER_TEXT = "Class {}"
-        for i in range(self.__NUMBER_OF_CLASSES):
+        for i in range(CLASSES_COUNT):
             header_label = tk.Label(self.__results, text=HEADER_TEXT.format(i))
             header_label.grid(row=i, column=0)
             result_label = tk.Label(self.__results)
