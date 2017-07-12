@@ -199,16 +199,15 @@ def augment_images(images, apply_flip, apply_noise, noise_intensity):
     return new_images
 
 
-def convert_to_colorspace(images, grayscale, rgb):
+def convert_to_colorspace(images, color_space):
     """
     Convert list of input images to the target colorspace
     :param images: list of images to convert
-    :param grayscale: whether to convert images to grayscale
-    :param rgb: whether to convert images to rgb color space
+    :param color_space: target colorspace
     :return: converted images
     """
     # Convert to rgb space if requested.
-    if rgb:
+    if color_space == "rgb":
         new_images = [
             image if is_rgb(image) else to_rgb(image) for image in images
         ]

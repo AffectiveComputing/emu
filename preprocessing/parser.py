@@ -105,15 +105,10 @@ def add_transformation_group(parser):
         "Image transformation",
         ""
     )
-    image_colouring = transformation_group.add_mutually_exclusive_group()
-    image_colouring.add_argument(
-        "-gray", "--grayscale", action="store_true",
-        help="Transform input images to grayscale. Exclusive with --rgb "
-             "option."
-    )
-    image_colouring.add_argument(
-        "-rgb", "--rgb", action="store_true",
-        help="Transform input images to rgb format."
+    transformation_group.add_argument(
+        "-c_spc", "--color_space",
+        type=str, choice=["rgb", "grayscale"],
+        help="Choose color space of the images after processing."
     )
     transformation_group.add_argument(
         "-size", "--target_size", type=int,

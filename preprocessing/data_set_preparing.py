@@ -11,8 +11,8 @@ __author__ = ["Paweł Kopeć", "Michał Górecki"]
 
 
 def prepare_data_set(
-        in_dir, out_dir, labels_file, grayscale=True, rgb=False,
-        target_size=(128, 128),
+        in_dir, out_dir, labels_file, color_space="grayscale",
+        target_size=(64, 64),
         cascade_path="data/cascades/haarcascade_frontalface_default.xml",
         min_neighbours=5, scale_factor=1.05, apply_noise=False,
         apply_flip=False, noise_intensity=0.2
@@ -32,7 +32,7 @@ def prepare_data_set(
         transformed_images, new_images = process_image(
             cascade, image, scale_factor, min_neighbours,
             apply_flip, apply_noise,
-            noise_intensity, grayscale, rgb,
+            noise_intensity, color_space,
             target_size
         )
         base_filename, extension = path.splitext(filename)
@@ -66,7 +66,7 @@ def prepare_data_set(
 
 def process_image(
         cascade, in_image, scale_factor, min_neighbours,
-        apply_flip, apply_noise, noise_intensity, grayscale, rgb, target_size
+        apply_flip, apply_noise, noise_intensity, color_space, target_size
 ):
     """
     This function processes image with face detection, augmentation and
@@ -78,8 +78,7 @@ def process_image(
     :param apply_flip: whether to apply flip augmentation
     :param apply_noise: whether to apply noise augmentation
     :param noise_intensity: intensity of the applied noise (0.0 - 1.0)
-    :param grayscale: whether to convert images to grayscale
-    :param rgb: whether to convert images to rgb color space
+    :param colorspace: desired color space
     :param target_size: desired size of transformed image
     :return: list of images before and after transformation
     """
@@ -87,7 +86,7 @@ def process_image(
     augmented_images = augment_images(
         faces, apply_flip, apply_noise, noise_intensity
     )
-    converted_images = convert_to_colorspace(augmented_images, grayscale, rgb)
+    converted_images = convert_to_colorspace(augmented_images, color_space)
     resized_images = [resize(image, target_size) for image in converted_images]
     normalized_images = [
         image if is_float(image) else normalize(image)

@@ -16,7 +16,6 @@ class Model(object):
 
     def __init__(self, net_architecture):
         self.__prepared_for_training = False
-
         self.__in_data = tf.placeholder(tf.float32, IN_SHAPE)
         self.__create_output_nodes(net_architecture)
         self.__create_environment()
@@ -28,11 +27,11 @@ class Model(object):
         :param model_dir:   directory with model files
         :return:
         """
+        self.__session.run(tf.global_variables_initializer())
         self.__best_model_saver.restore(self.__session, model_dir)
         results = self.__session.run(
             self.__scores, feed_dict={self.__in_data: x}
         )
-
         return results
 
     def train(
@@ -41,7 +40,7 @@ class Model(object):
             best_save_interval, validation_interval
     ):
         self.__prepare_for_training()
-
+        self.__session.run(tf.global_variables_initializer())
         min_loss = -np.log(1 / CLASSES_COUNT)
         for epoch in range(max_epochs):
             # Obtain training data batch.
@@ -103,10 +102,11 @@ class Model(object):
     def __create_environment(self):
         self.__session = tf.Session()
         self.__best_model_saver = tf.train.Saver(max_to_keep=1)
-        self.__session.run(tf.global_variables_initializer())
 
     def __prepare_for_training(self):
         if not self.__prepared_for_training:
+            self.__in_labels = tf.placeholder(tf.int64, [None, ])
+            self.__in_learning_rate = tf.placeholder(tf.float32, [])
             self.__create_training_nodes()
             self.__create_summary()
             self.__checkpoints_saver = tf.train.Saver(max_to_keep=10)
@@ -114,9 +114,6 @@ class Model(object):
             self.__validation_writer = tf.summary.FileWriter(
                 "data/logs/validation"
             )
-            self.__in_labels = tf.placeholder(tf.int64, [None, ])
-            self.__in_learning_rate = tf.placeholder(tf.float32, [])
-
             self.__prepared_for_training = True
 
     def __create_training_nodes(self):

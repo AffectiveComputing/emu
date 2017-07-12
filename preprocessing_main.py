@@ -5,7 +5,7 @@ __author__ = ["Paweł Kopeć", "Michał Górecki"]
 
 def main():
     prepare_data_set(
-        "data/png", "data/npy", "data/png/emotion.txt",
+        "data/png", "data/data_npy", "data/png/emotion.txt",
         apply_noise=True, apply_flip=True
     )
 
