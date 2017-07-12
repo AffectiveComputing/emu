@@ -5,11 +5,13 @@ This module is responsible for model control.
 
 import numpy as np
 import tensorflow as tf
+from os import path, makedirs
 
 from model.const import *
 from model.net import net
 
 __author__ = ["Paweł Kopeć", "Michał Górecki"]
+
 
 
 class Model(object):
@@ -93,15 +95,17 @@ class Model(object):
 
     def __prepare_for_training(self):
         if not self.__prepared_for_training:
+            for dir in DIRS_TO_ENSURE:
+                if not path.exists(dir):
+                    makedirs(dir)
+
             self.__in_labels = tf.placeholder(tf.int64, [None, ])
             self.__in_learning_rate = tf.placeholder(tf.float32, [])
             self.__create_training_nodes()
             self.__create_summary()
             self.__checkpoints_saver = tf.train.Saver(max_to_keep=10)
-            self.__train_writer = tf.summary.FileWriter("data/logs/train")
-            self.__validation_writer = tf.summary.FileWriter(
-                "data/logs/validation"
-            )
+            self.__train_writer = tf.summary.FileWriter(TRAIN_LOG_DIR)
+            self.__validation_writer = tf.summary.FileWriter(VALIDATION_LOG_DIR)
             self.__prepared_for_training = True
 
     def __create_training_nodes(self):
