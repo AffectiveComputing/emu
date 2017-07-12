@@ -3,7 +3,7 @@ SOURCE_DIR = "data/npy"
 META_FILE = "data/logs/best_model/model.meta"
 MODEL_FILE = "data/logs/best_model/model"
 CHECKPOINTS_FILE = "data/logs/checkpoints/model"
-LABELS_FILE = "data/png/emotion.txt"
+LABELS_FILE = "data/png/labels.txt"
 
 CHANNELS = 1
 
