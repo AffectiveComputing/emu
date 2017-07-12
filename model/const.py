@@ -4,6 +4,14 @@ META_FILE = "data/logs/best_model/model.meta"
 MODEL_FILE = "data/logs/best_model/model"
 CHECKPOINTS_FILE = "data/logs/checkpoints/model"
 LABELS_FILE = "data/png/labels.txt"
+TRAIN_LOG_DIR = "data/logs/train"
+VALIDATION_LOG_DIR = "data/logs/train"
+
+DIRS_TO_ENSURE = [
+    "data/logs/best_model/",
+    "data/logs/checkpoints/model/",
+    "data/logs/train/"
+]
 
 CHANNELS = 1
 
