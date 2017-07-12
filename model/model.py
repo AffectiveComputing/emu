@@ -62,6 +62,7 @@ class Model(object):
             self.__train_writer.add_summary(summary_out, global_step=epoch)
             # Perform validation run every 'validation interval' steps.
             if epoch % validation_interval == 0:
+                data, labels = data_set.validation_batch()
                 current_loss, accuracy_value, summary_out = self.__session.run(
                     [self.__loss, self.__accuracy, self.__summary],
                     feed_dict={
