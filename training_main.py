@@ -7,10 +7,6 @@ __author__ = ["Paweł Kopeć", "Michał Górecki"]
 
 
 def main():
-    model = Model()
-    model.logs = True
-    data_set = DataSet(SOURCE_DIR, LABELS_FILE)
-
     layers = [
         {
             "type": "conv",
@@ -34,8 +30,10 @@ def main():
             "out_size": 7
         }
     ]
-
-    model.train(data_set, 0.003, 0.001, 100000, 5, 0.99, 100, 5, 20, layers)
+    model = Model("train", layers)
+    model.logs = True
+    data_set = DataSet("data/data_npy", "data/data_npy/emotion")
+    model.train(data_set, 0.003, 0.001, 100000, 5, 0.99, 100, 5, 20, 20)
 
 
 if __name__ == "__main__":
