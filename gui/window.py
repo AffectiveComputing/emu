@@ -168,7 +168,7 @@ class Window(tk.Frame):
                  cascade, img, 1.05, 5, False, False, 0.1, "grayscale", (64, 64)
              )
              input[0] = np.expand_dims(input[0], -1)
-             scores = self.__predictor.infer(input)[0]
+             scores = self.__predictor.infer([input[0]])[0]
              self.__set_results(scores)
 
 
