@@ -30,7 +30,7 @@ def main():
             "out_size": 7
         }
     ]
-    model = Model("train", layers)
+    model = Model(layers)
     model.logs = True
     data_set = DataSet("data/data_npy", "data/data_npy/emotion")
     model.train(data_set, 0.003, 0.001, 100000, 5, 0.99, 100, 5, 20, 20)
