@@ -3,12 +3,10 @@ This module contains image transformations, conversions and checks. It also
 contains face detection and extraction routines.
 """
 
-
 import cv2
 import numpy as np
 
-
-__author__ = ["Michał Górecki"]
+__author__ = ["Paweł Kopeć", "Michał Górecki"]
 
 
 def load_image(path):
@@ -221,40 +219,3 @@ def convert_to_colorspace(images, grayscale, rgb):
             for image in images
         ]
     return new_images
-
-
-def process_image(
-        cascade, in_image, scale_factor, min_neighbours,
-        apply_flip, apply_noise, noise_intensity, grayscale, rgb, target_size
-):
-    """
-    This function processes image with face detection, augmentation and
-    transformation.
-    :param cascade: cascade object used in face detection
-    :param in_image: processed image
-    :param scale_factor: scaling factor parameter for face detection
-    :param min_neighbours: minimum neighbours parameter for face detection
-    :param apply_flip: whether to apply flip augmentation
-    :param apply_noise: whether to apply noise augmentation
-    :param noise_intensity: intensity of the applied noise (0.0 - 1.0)
-    :param grayscale: whether to convert images to grayscale
-    :param rgb: whether to convert images to rgb color space
-    :param target_size: desired size of transformed image
-    :return: list of images before and after transformation
-    """
-    # Find faces on the image and create list of new images from them.
-    faces = extract_faces(cascade, in_image, scale_factor, min_neighbours)
-    # Apply data augmentation.
-    augmented_images = augment_images(
-        faces, apply_flip, apply_noise, noise_intensity
-    )
-    # Convert obtained images to target format.
-    converted_images = convert_to_colorspace(augmented_images, grayscale, rgb)
-    # Resize images to desired size and normalize them.
-    resized_images = [resize(image, target_size) for image in converted_images]
-    normalized_images = [
-        image if is_float(image) else normalize(image)
-        for image in resized_images
-    ]
-    # Return both transformed and augmented images.
-    return normalized_images, augmented_images
