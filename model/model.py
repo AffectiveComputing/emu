@@ -17,22 +17,9 @@ class Model(object):
     def __init__(self, net_architecture):
         self.__prepared_for_training = False
         self.__in_data = tf.placeholder(tf.float32, IN_SHAPE)
+        tf.add_to_collection("in_data", self.__in_data)
         self.__create_output_nodes(net_architecture)
         self.__create_environment()
-
-    def infer(self, x, model_dir):
-        """
-
-        :param x:           input placeholder
-        :param model_dir:   directory with model files
-        :return:
-        """
-        self.__session.run(tf.global_variables_initializer())
-        self.__best_model_saver.restore(self.__session, model_dir)
-        results = self.__session.run(
-            self.__scores, feed_dict={self.__in_data: x}
-        )
-        return results
 
     def train(
         self, data_set, learning_rate, desired_loss, max_epochs,
@@ -98,6 +85,7 @@ class Model(object):
         self.__output = net(self.__in_data, net_architecture)
         self.__predictions = tf.argmax(self.__output, axis=1)
         self.__scores = tf.nn.softmax(self.__output)
+        tf.add_to_collection("scores", self.__scores)
 
     def __create_environment(self):
         self.__session = tf.Session()

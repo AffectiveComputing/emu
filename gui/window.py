@@ -7,11 +7,14 @@ import tkinter as tk
 from os import path
 from tkinter.filedialog import askopenfilename
 
+import numpy as np
 from PIL import Image, ImageTk
 
 from model.const import CLASSES_COUNT
 from model.model import Model
+from model.predictor import Predictor
 from preprocessing import image_utilities
+from preprocessing import data_set_preparing
 from model import const
 
 __author__ = ["Paweł Kopeć", "Michał Górecki"]
@@ -43,7 +46,7 @@ class Window(tk.Frame):
         self.__create_widgets()
         self.__set_results([0.0 for i in range(CLASSES_COUNT)])
 
-        self.__model = Model()
+        self.__predictor = Predictor(const.MODEL_FILE, const.META_FILE)
         self.__image_path = None
 
     def __setup_layout(self):
@@ -161,12 +164,11 @@ class Window(tk.Frame):
         if self.__image_path:
              img = image_utilities.load_image(self.__image_path)
              cascade = image_utilities.load_cascade(CASCADE_PATH)
-             input, _ = image_utilities.process_image(
-                 cascade, img, 1.05, 5, False, False, 0.1, True, False, (64, 64)
+             input, _ = data_set_preparing.process_image(
+                 cascade, img, 1.05, 5, False, False, 0.1, "grayscale", (64, 64)
              )
-             scores = self.__model.infer(
-                 input, const.META_FILE, const.MODEL_FILE
-             )[0]
+             input[0] = np.expand_dims(input[0], -1)
+             scores = self.__predictor.infer(input)[0]
              self.__set_results(scores)
 
 
@@ -176,4 +178,4 @@ class Window(tk.Frame):
         :return: -
         """
         for i, j in enumerate(results):
-            self.__classes_results[i]["text"] = str(j)
+            self.__classes_results[i]["text"] = "{:.3f}".format(j)
