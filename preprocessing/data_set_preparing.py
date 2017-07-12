@@ -13,7 +13,7 @@ __author__ = ["Paweł Kopeć", "Michał Górecki"]
 def prepare_data_set(
         in_dir, out_dir, labels_file, grayscale=True, rgb=False,
         target_size=(128, 128),
-        cascade_path="cascades/haarcascade_frontalface_default.xml",
+        cascade_path="data/cascades/haarcascade_frontalface_default.xml",
         min_neighbours=5, scale_factor=1.05, apply_noise=False,
         apply_flip=False, noise_intensity=0.2
 ):
@@ -21,7 +21,6 @@ def prepare_data_set(
         makedirs(out_dir)
     cascade = load_cascade(cascade_path)
     labels = load_labels(labels_file)
-
     for filename in listdir(in_dir):
         # Load next image.
         image = load_image(
@@ -30,14 +29,12 @@ def prepare_data_set(
         # Skip loop iteration if image failed to load.
         if image is None:
             continue
-
         transformed_images, new_images = process_image(
             cascade, image, scale_factor, min_neighbours,
             apply_flip, apply_noise,
             noise_intensity, grayscale, rgb,
             target_size
         )
-
         base_filename, extension = path.splitext(filename)
         new_filenames = [
             base_filename + "_{}".format(i) for i in range(len(new_images))
@@ -96,5 +93,4 @@ def process_image(
         image if is_float(image) else normalize(image)
         for image in resized_images
     ]
-
     return normalized_images, augmented_images
