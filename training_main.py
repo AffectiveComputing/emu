@@ -1,5 +1,3 @@
-
-from model.const import SOURCE_DIR, LABELS_FILE
 from model.data_set import DataSet
 from model.model import Model
 
