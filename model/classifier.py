@@ -1,18 +1,10 @@
-"""
-
-"""
-
-
 import tensorflow as tf
 
 
 __author__ = ["Michał Górecki"]
 
 
-class Predictor:
-    """
-
-    """
+class Classifier:
 
     def __init__(self, model_path, meta_path):
         # Setup environment.

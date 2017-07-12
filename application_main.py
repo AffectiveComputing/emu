@@ -1,11 +1,19 @@
-from gui.window import Window
+import sys
+
+from PyQt5.QtWidgets import QApplication
+
+from aplication.emu_window import EmuWindow
 
 __author__ = ["Paweł Kopeć", "Michał Górecki"]
 
 
 def main():
-    gui = Window()
-    gui.mainloop()
+    app = QApplication(sys.argv)
+
+    window = EmuWindow()
+    window.show()
+
+    sys.exit(app.exec_())
 
 if __name__ == "__main__":
     main()
