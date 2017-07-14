@@ -6,6 +6,8 @@ __author__ = ["Michał Górecki"]
 
 class Classifier:
 
+    INPUT_SIZE = (64, 64)
+
     def __init__(self, model_path, meta_path):
         # Setup environment.
         self.__session = tf.Session()

@@ -8,6 +8,7 @@ import numpy as np
 
 __author__ = ["Paweł Kopeć", "Michał Górecki"]
 
+CASCADE_FILE = "data/cascades/haarcascade_frontalface_default.xml"
 
 def load_image(path):
     """
@@ -156,7 +157,8 @@ def detect_faces(cascade, image, scale_factor, min_neighbours):
     return cascade.detectMultiScale(image, scale_factor, min_neighbours)
 
 
-def extract_faces(cascade, image, scale_factor, min_neighbours):
+def extract_faces(image, cascade=load_cascade(CASCADE_FILE), scale_factor=1.05,
+                  min_neighbours=5):
     """
     Extract faces present on the input image.
     :param cascade: cascade object used for detection

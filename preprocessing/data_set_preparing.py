@@ -82,7 +82,7 @@ def process_image(
     :param target_size: desired size of transformed image
     :return: list of images before and after transformation
     """
-    faces = extract_faces(cascade, in_image, scale_factor, min_neighbours)
+    faces = extract_faces(in_image, cascade, scale_factor, min_neighbours)
     augmented_images = augment_images(
         faces, apply_flip, apply_noise, noise_intensity
     )
