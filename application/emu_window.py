@@ -98,6 +98,7 @@ class EmuWindow(QMainWindow):
                 self.__image.setGeometry(94, 20, 512, 512)
                 q_image = self.__image_to__q_image(featured_face)
                 self.__image.setPixmap(QPixmap.fromImage(q_image))
+                self.__print_scores([0] * len(self.__EMOTIONS))
 
                 # Set input for the neural net.
                 self.__input = convert_to_colorspace([faces[0]], "grayscale")[0]
