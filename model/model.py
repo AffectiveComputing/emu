@@ -17,9 +17,17 @@ __author__ = ["Paweł Kopeć", "Michał Górecki"]
 class Model(object):
 
     def __init__(self, net_architecture):
+        # Flag for lazy initialization in case model
+        # will only infer without training.
         self.__prepared_for_training = False
+
+        # Add input to collection so that it can be used for infering
+        # after training and saving to hard drive.
         self.__in_data = tf.placeholder(tf.float32, IN_SHAPE)
         tf.add_to_collection("in_data", self.__in_data)
+
+        # Build Tensorflow graph based on dictionary
+        # describing architecture of a neural net.
         self.__create_output_nodes(net_architecture)
         self.__create_environment()
 

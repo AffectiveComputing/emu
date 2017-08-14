@@ -16,7 +16,8 @@ __author__ = ["Michał Górecki", "Paweł Kopeć"]
 
 class DataSet(object):
     """
-    Object which contains train, validation and test subsets, and handles them.
+    Object which handles train, validation and test subsets, shuffles the data
+    and rewinds it after all the data has been served.
     """
 
     def __init__(self, source_path, labels_path, subsets_sizes=(0.8, 0.1, 0.1)):
@@ -81,13 +82,11 @@ class DataSet(object):
         :param source_path: path to the directory which contains image files
         :return: loaded images matrix and labels vector
         """
-        # Constant image file extension.
-        DATA_FILE_EXTENSION = ".npy"
         images = []
         labels = []
         # Load image files from the disk with dict keys used as filenames.
         for key in labels_dict:
-            image = np.load(path.join(source_path, key + DATA_FILE_EXTENSION))
+            image = np.load(path.join(source_path, key + ".npy"))
             if image_utilities.is_grayscale(image):
                 image = np.expand_dims(image, -1)
             images.append(image)

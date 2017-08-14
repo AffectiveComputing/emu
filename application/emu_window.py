@@ -70,7 +70,7 @@ class EmuWindow(QMainWindow):
 
         self.__check_button = QPushButton('Check emotion', self)
         self.__check_button.resize(self.__check_button.sizeHint())
-        self.__check_button.clicked.connect(self.__check_image)
+        self.__check_button.clicked.connect(self.__classify_image)
         self.__check_button.move(360, 560)
 
     def __load_image(self):
@@ -114,7 +114,7 @@ class EmuWindow(QMainWindow):
         return QImage(image.data, width, height, bytes_per_line,
                       QImage.Format_RGB888)
 
-    def __check_image(self):
+    def __classify_image(self):
         if self.__input is not None:
             scores = self.__classifier.infer([self.__input])[0]
             self.__print_scores(scores)

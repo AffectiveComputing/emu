@@ -75,6 +75,7 @@ def net(x, layers):
 
 def deep_layers(x, in_size, out_size, index):
     """
+    Build deep layers on the top of previous output.
 
     :param x:           input placeholder
     :param in_size:     size of output of previous layer

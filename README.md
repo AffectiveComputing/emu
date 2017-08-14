@@ -37,7 +37,7 @@ python3 application_main.py
 
 If you want to train your own model.
 
-1. Download and unpack [Cohn-Kanade database](http://www.consortium.ri.cmu.edu/ckagree/) to /data/png.
+1. Download and unpack [FER-2013 database](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data) to /data/png.
 
 2. Preprocess your database.
 
@@ -55,3 +55,4 @@ Status
 ---
 
 Project in progress. Feedback welcome. Still improving neural net.
+Don't mind the labels yet, they are in a wrong order.

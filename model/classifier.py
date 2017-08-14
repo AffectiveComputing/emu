@@ -5,6 +5,10 @@ __author__ = ["Michał Górecki"]
 
 
 class Classifier:
+    """
+    A class for inferring the class without initializing graph nodes needed
+    only for training.
+    """
 
     INPUT_SIZE = (64, 64)
 
@@ -23,7 +27,6 @@ class Classifier:
         :param model_path:   directory with model files
         :return:
         """
-        results = self.__session.run(
+        return self.__session.run(
             self.__scores, feed_dict={self.__in_data: x}
         )
-        return results

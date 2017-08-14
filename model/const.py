@@ -7,6 +7,7 @@ LABELS_FILE = "data/png/labels.txt"
 TRAIN_LOG_DIR = "data/logs/train"
 VALIDATION_LOG_DIR = "data/logs/train"
 
+# Directories that must exist before the training of a model.
 DIRS_TO_ENSURE = [
     "data/logs/best_model/",
     "data/logs/checkpoints/model/",
@@ -15,6 +16,7 @@ DIRS_TO_ENSURE = [
 
 CHANNELS = 1
 
+# Image attributes.
 WIDTH = 64
 HEIGHT = 64
 IMG_SHAPE = (HEIGHT, WIDTH, CHANNELS)
