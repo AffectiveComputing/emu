@@ -161,3 +161,7 @@ class EmuWindow(QMainWindow):
         painter.setBrush(QColor(0, 0, 0))
         painter.drawRect(89, 15, 522, 522)
         painter.drawRect(94, 20, 512, 512)
+
+    def closeEvent(self, event):
+        self.__classifier.close()
+        event.accept()
