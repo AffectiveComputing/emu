@@ -24,13 +24,13 @@ If your machine does not support CUDA.
 ```
 pip3 install tensorflow numpy PyQt5
 ```
-In case of trouble with installation of Tensorflow go [here](https://www.tensorflow.org/install/)
+In case of trouble with installation of Tensorflow go [here](https://www.tensorflow.org/install/).
 
 #### Application
 
 If you want to quickly launch gui application.
 ```
-python3 application_main.py
+python3 emu.py
 ```
 
 #### Training
@@ -39,20 +39,14 @@ If you want to train your own model.
 
 1. Download and unpack [FER-2013 database](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data) to /data/dataset.
 
-2. Preprocess your database.
+2. Train the model.
 
 ```
-python3 preprocessing_main.py
-```
-
-3. Train the model.
-
-```
-python3 training_main.py
+python3 train.py
 ```
 
 Status
 ---
 
 Project in progress. Feedback welcome. Still improving neural net.
-Don't mind the labels yet, they are in a wrong order.
+Don't mind the labels in GUI yet, they are in a wrong order.
