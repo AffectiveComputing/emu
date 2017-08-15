@@ -43,6 +43,7 @@ class EmuWindow(QMainWindow):
     def __init_window(self):
         self.setGeometry(300, 300, 900, 600)
         self.setWindowTitle('Emu')
+        self.setAcceptDrops(True)
 
     def __init_image_frame(self):
         self.__image = QLabel(self)
@@ -69,7 +70,7 @@ class EmuWindow(QMainWindow):
     def __init_buttons(self):
         self.__choose_button = QPushButton('Choose image', self)
         self.__choose_button.resize(self.__choose_button.sizeHint())
-        self.__choose_button.clicked.connect(self.__load_image)
+        self.__choose_button.clicked.connect(self.__load_image_from_path)
         self.__choose_button.move(240, 560)
 
         self.__check_button = QPushButton('Check emotion', self)
@@ -77,23 +78,22 @@ class EmuWindow(QMainWindow):
         self.__check_button.clicked.connect(self.__classify_image)
         self.__check_button.move(360, 560)
 
-    def __load_image(self):
-        image_path = QFileDialog.getOpenFileName()[0]
-        if image_path:
+    def __load_image(self, path):
+        if path:
             try:
-                if not image_path or not os.path.exists(image_path):
+                if not path or not os.path.exists(path):
                     raise FileNotFoundError(
-                        "No such file {}".format(image_path))
+                        "No such file {}".format(path))
 
                 try:
-                    image = cv2.imread(image_path)
+                    image = cv2.imread(path)
                 except:
                     raise ValueError("Couldn't load image")
 
                 if image is False:
                     raise ValueError("Couldn't load image")
 
-                self.__image_path = image_path
+                self.__image_path = path
                 faces = extract_faces(image)
                 if len(faces) == 0:
                     raise ValueError("Couldn't find face on an image")
@@ -112,6 +112,10 @@ class EmuWindow(QMainWindow):
             except Exception as e:
                 # TODO label with error messages
                 print(e)
+
+    def __load_image_from_path(self):
+        image_path = QFileDialog.getOpenFileName()[0]
+        self.__load_image(image_path)
 
     def __image_to__q_image(self, image):
         height, width, _ = image.shape
@@ -136,6 +140,20 @@ class EmuWindow(QMainWindow):
         painter.begin(self)
         self.__draw_frame(painter)
         painter.end()
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls() or event.mimeData().hasImage():
+            event.accept()
+        else:
+            print(event.mimeData())
+            event.ignore()
+
+    def dropEvent(self, event):
+        if event.mimeData().hasImage():
+            pass
+        else:
+            path = event.mimeData().urls()[0].toLocalFile()
+            self.__load_image(path)
 
     def __draw_frame(self, painter):
         col = QColor(0, 0, 0)
