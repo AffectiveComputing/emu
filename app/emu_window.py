@@ -21,9 +21,8 @@ class EmuWindow(QMainWindow):
     and preprocessing of images to be classified.
     """
 
-    __EMOTIONS = ["Contempt", "Fear", "Happiness", "Disgust", "Sadness",
-                  "Anger", "Surprise"]
-
+    __EMOTIONS = ["Anger", "Disgust", "Fear", "Happiness", "Sadness",
+                  "Surprise", "Neutral"]
     __CASCADE_PATH = "data/cascades/haarcascade_frontalface_default.xml"
 
     def __init__(self):

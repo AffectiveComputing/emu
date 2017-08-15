@@ -8,6 +8,27 @@ This project's goal is to quickly classify 7 basic human emotions (anger, contem
 <img align="center" src="https://user-images.githubusercontent.com/23619157/28232700-7b395b88-68f2-11e7-982f-72e109b2191d.png" width="80%">
 </p>
 
+Project Structure
+---
+
+```
+|-- app
+|-- data
+|   |-- cascades
+|   |-- dataset
+|   |-- logs
+|-- model
+|-- emu.py
+|-- train.py
+```
+
+* ```app``` - modules responsible for gui.
+* ```data/cascades``` - contains OpenCV face detection cascade files.
+* ```data/dataset``` - this is where the dataset in .csv format should go.
+* ```data/logs``` - logs generated in the training will go here.
+* ```model``` - scripts related to network's model .
+* ```emu.py``` - main gui script. 
+* ```train.py``` - entry point for training.
 
 Setup
 ---
