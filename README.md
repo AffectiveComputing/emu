@@ -37,7 +37,7 @@ python3 application_main.py
 
 If you want to train your own model.
 
-1. Download and unpack [FER-2013 database](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data) to /data/png.
+1. Download and unpack [FER-2013 database](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data) to /data/dataset.
 
 2. Preprocess your database.
 

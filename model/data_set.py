@@ -2,29 +2,23 @@
 This module contains definition of the data set object.
 """
 
-
-import pickle
-from os import path
-
 import numpy as np
-
-from preprocessing import image_utilities
-
+import pandas as pd
 
 __author__ = ["Michał Górecki", "Paweł Kopeć"]
 
 
 class DataSet(object):
+    # TODO handling errors
+
     """
     Object which handles train, validation and test subsets, shuffles the data
     and rewinds it after all the data has been served.
     """
 
-    def __init__(self, source_path, labels_path, subsets_sizes=(0.8, 0.1, 0.1)):
+    def __init__(self, csv_path, subsets_sizes=(0.8, 0.1, 0.1)):
         # Load labels dictionary.
-        with open(labels_path, "rb") as labels_file:
-            labels_dict = pickle.load(labels_file)
-        images, labels = self.__load_data_set(labels_dict, source_path)
+        images, labels = self.__load_data_set(csv_path)
         self.__split_data_set(images, labels, subsets_sizes)
         # Local index of the currently server batch start.
         self.__batch_i = 0
@@ -74,26 +68,25 @@ class DataSet(object):
         np.random.shuffle(self.__train_labels)
 
     @staticmethod
-    def __load_data_set(labels_dict, source_path):
+    def __load_data_set(csv_path):
         """
         Load all image files basing on the given labels dictionary and path to
         the data directory.
-        :param labels_dict: loaded dictionary of labels for the image set
-        :param source_path: path to the directory which contains image files
+
         :return: loaded images matrix and labels vector
         """
-        images = []
-        labels = []
-        # Load image files from the disk with dict keys used as filenames.
-        for key in labels_dict:
-            image = np.load(path.join(source_path, key + ".npy"))
-            if image_utilities.is_grayscale(image):
-                image = np.expand_dims(image, -1)
-            images.append(image)
-            labels.append(labels_dict[key])
-        images = np.array(images)
-        labels = np.array(labels, dtype=np.int)
+
+        def str_to_img(string):
+            return (np.fromstring(string, dtype=np.uint8, sep=" ")
+                    .reshape((48, 48, 1))
+                    / np.iinfo(np.uint8).max)
+
+        data = pd.read_csv(csv_path)
+        images = np.array(data["pixels"].apply(str_to_img).values.tolist())
+        labels = data["emotion"].values
+
         return images, labels
+
 
     def __split_data_set(self, images, labels, subsets_sizes):
         """

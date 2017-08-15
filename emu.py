@@ -2,7 +2,7 @@ import sys
 
 from PyQt5.QtWidgets import QApplication
 
-from application.emu_window import EmuWindow
+from app.emu_window import EmuWindow
 
 __author__ = ["Paweł Kopeć", "Michał Górecki"]
 

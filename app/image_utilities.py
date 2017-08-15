@@ -4,29 +4,10 @@ contains face detection and extraction routines.
 """
 
 import cv2
-import numpy as np
 
 __author__ = ["Paweł Kopeć", "Michał Górecki"]
 
 CASCADE_FILE = "data/cascades/haarcascade_frontalface_default.xml"
-
-def load_image(path):
-    """
-    Load image from the file on the disk.
-    :param path: path to the input file
-    :return: loaded image or false if it fails
-    """
-    return cv2.imread(path)
-
-
-def save_image(path, image):
-    """
-    Save input image on the disk.
-    :param path: path to the output file
-    :param image: input image
-    :return: -
-    """
-    cv2.imwrite(path, image)
 
 
 def crop(image, rectangle):
@@ -38,64 +19,6 @@ def crop(image, rectangle):
     """
     x, y, w, h = rectangle
     return image[y:y + h, x:x + w]
-
-
-def resize(image, size):
-    """
-    Resize given image.
-    :param image: input image
-    :param size: desired new image size (tuple of width, height)
-    :return: resized image
-    """
-    return cv2.resize(image, size)
-
-
-def flip(image):
-    """
-    Flip given image horizontally.
-    :param image: input image
-    :return: flipped image
-    """
-    HORIZONTAL_FLIP_FLAG = 1
-    return cv2.flip(image, HORIZONTAL_FLIP_FLAG)
-
-
-def is_float(image):
-    """
-    Check if image's color values are float values.
-    :param image: checked image
-    :return: result of the check
-    """
-    return np.issubdtype(image.dtype, float)
-
-
-def normalize(image):
-    """
-    Normalize image colors to 0.0 - 1.0 range.
-    :param image: input image with colors in integer space
-    :return: normalized image
-    """
-    return image / np.iinfo(image.dtype).max
-
-
-def add_noise(image, intensity):
-    """
-    Add noise mask to the image.
-    :param image: input image
-    :param intensity: fraction, which describes how much of the image max
-                      allowed color value, should be the noise limit
-    :return: image with noise applied to it
-    """
-    # Determine max color value of the input image's format and max noise.
-    if is_float(image):
-        max_color = 1.0
-    else:
-        max_color = np.iinfo(image.dtype).max
-    max_noise = intensity * max_color
-    # Create noise with uniform distribution and apply it.
-    noise = np.random.uniform(-max_noise, max_noise, image.shape)
-    noise_image = image + noise
-    return np.minimum(np.maximum(0, noise_image), max_color).astype(image.dtype)
 
 
 def is_grayscale(image):
@@ -178,27 +101,6 @@ def extract_faces(image, cascade=load_cascade(CASCADE_FILE), scale_factor=1.05,
     for face_rectangle in faces_rectangles:
         faces.append(crop(image, face_rectangle))
     return faces
-
-
-def augment_images(images, apply_flip, apply_noise, noise_intensity):
-    """
-    Create augmented list of images from list of original images.
-    :param images: list of original images
-    :param apply_flip: whether to augment with flip or not
-    :param apply_noise:  whether to apply noise to the images or not
-    :param noise_intensity: intensity of applied noise
-    :return: augmented list of images
-    """
-    new_images = list(images)
-    # Apply flip if requested.
-    if apply_flip:
-        new_images += [flip(image) for image in new_images]
-    # Apply noise if requested.
-    if apply_noise:
-        new_images += [
-            add_noise(image, noise_intensity) for image in new_images
-        ]
-    return new_images
 
 
 def convert_to_colorspace(images, color_space):

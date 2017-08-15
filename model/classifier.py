@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 
-__author__ = ["Michał Górecki"]
+__author__ = ["Michał Górecki", "Paweł Kopeć"]
 
 
 class Classifier:
@@ -10,7 +10,7 @@ class Classifier:
     only for training.
     """
 
-    INPUT_SIZE = (64, 64)
+    INPUT_SIZE = (48, 48)
 
     def __init__(self, model_path, meta_path):
         # Setup environment.

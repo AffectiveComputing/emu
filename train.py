@@ -1,5 +1,5 @@
 from model.data_set import DataSet
-from model.model import Model
+from model.model import Model, DATA_SET_DIR
 
 __author__ = ["Paweł Kopeć", "Michał Górecki"]
 
@@ -30,7 +30,7 @@ def main():
     ]
     model = Model(layers)
     model.logs = True
-    data_set = DataSet("data/npy", "data/npy/labels")
+    data_set = DataSet(DATA_SET_DIR)
     model.train(data_set, 0.003, 0.001, 100000, 5, 0.99, 100, 5, 20, 20)
 
 

@@ -1,21 +1,21 @@
 import os
 
+import cv2
 import numpy as np
 from PyQt5.QtCore import QMimeData
 from PyQt5.QtGui import QPixmap, QPainter, QColor, QImage
 from PyQt5.QtWidgets import QMainWindow, QPushButton, \
     QLabel, QFileDialog
 
+from app.image_utilities import load_cascade, \
+    extract_faces, convert_to_colorspace
 from model.classifier import Classifier
 from model.const import MODEL_FILE, META_FILE
-from preprocessing.image_utilities import load_image, load_cascade, \
-    extract_faces, resize, convert_to_colorspace
 
 __author__ = ["Paweł Kopeć"]
 
 
 class EmuWindow(QMainWindow):
-
     __EMOTIONS = ["Contempt", "Fear", "Happiness", "Disgust", "Sadness",
                   "Anger", "Surprise"]
 
@@ -34,7 +34,7 @@ class EmuWindow(QMainWindow):
         self.__classifier = Classifier(MODEL_FILE, META_FILE)
         self.__cascade = load_cascade(self.__CASCADE_PATH)
         self.__input = None
-        #TODO error message
+        # TODO error message
 
     def __init_window(self):
         self.setGeometry(300, 300, 900, 600)
@@ -56,7 +56,7 @@ class EmuWindow(QMainWindow):
         for i, emotion in enumerate(self.__EMOTIONS):
             self.__emotions_labels[i] = QLabel(self)
             self.__emotions_scores[i] = QLabel(self)
-            self.__emotions_labels[i].setText('<h3>' + emotion +'</h3>')
+            self.__emotions_labels[i].setText('<h3>' + emotion + '</h3>')
             self.__emotions_labels[i].move(655, 45 + 20 * i)
             self.__emotions_scores[i].move(785, 45 + 20 * i)
 
@@ -78,10 +78,11 @@ class EmuWindow(QMainWindow):
         if image_path:
             try:
                 if not image_path or not os.path.exists(image_path):
-                    raise FileNotFoundError("No such file {}".format(image_path))
+                    raise FileNotFoundError(
+                        "No such file {}".format(image_path))
 
                 try:
-                    image = load_image(image_path)
+                    image = cv2.imread(image_path)
                 except:
                     raise ValueError("Couldn't load image")
 
@@ -94,7 +95,7 @@ class EmuWindow(QMainWindow):
                     raise ValueError("Couldn't find face on an image")
 
                 # Set face as featured image in gui.
-                featured_face = resize(faces[0], (512, 512))
+                featured_face = cv2.resize(faces[0], (512, 512))
                 self.__image.setGeometry(94, 20, 512, 512)
                 q_image = self.__image_to__q_image(featured_face)
                 self.__image.setPixmap(QPixmap.fromImage(q_image))
@@ -102,10 +103,10 @@ class EmuWindow(QMainWindow):
 
                 # Set input for the neural net.
                 self.__input = convert_to_colorspace([faces[0]], "grayscale")[0]
-                self.__input = resize(self.__input, Classifier.INPUT_SIZE)
+                self.__input = cv2.resize(self.__input, Classifier.INPUT_SIZE)
                 self.__input = np.expand_dims(self.__input, -1)
             except Exception as e:
-                #TODO label with error messages
+                # TODO label with error messages
                 print(e)
 
     def __image_to__q_image(self, image):
@@ -119,12 +120,12 @@ class EmuWindow(QMainWindow):
             scores = self.__classifier.infer([self.__input])[0]
             self.__print_scores(scores)
         else:
-            #TODO error message
+            # TODO error message
             pass
 
     def __print_scores(self, scores):
         for label, score in zip(self.__emotions_scores, scores):
-            label.setText('<h3>' + str('%.2f'%(score * 100) + ' %</h3>'))
+            label.setText('<h3>' + str('%.2f' % (score * 100) + ' %</h3>'))
 
     def paintEvent(self, e):
         painter = QPainter()

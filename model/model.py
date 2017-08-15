@@ -13,7 +13,6 @@ from model.net import net
 __author__ = ["Paweł Kopeć", "Michał Górecki"]
 
 
-
 class Model(object):
 
     def __init__(self, net_architecture):

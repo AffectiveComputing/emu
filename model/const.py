@@ -1,9 +1,7 @@
-SOURCE_DIR = "data/npy"
-
+DATA_SET_DIR = "data/dataset/fer2013.csv"
 META_FILE = "data/logs/best_model/model.meta"
 MODEL_FILE = "data/logs/best_model/model"
 CHECKPOINTS_FILE = "data/logs/checkpoints/model"
-LABELS_FILE = "data/png/labels.txt"
 TRAIN_LOG_DIR = "data/logs/train"
 VALIDATION_LOG_DIR = "data/logs/train"
 
@@ -17,10 +15,10 @@ DIRS_TO_ENSURE = [
 CHANNELS = 1
 
 # Image attributes.
-WIDTH = 64
-HEIGHT = 64
+WIDTH = 48
+HEIGHT = 48
 IMG_SHAPE = (HEIGHT, WIDTH, CHANNELS)
 IN_SHAPE = (None, HEIGHT, WIDTH, CHANNELS)
 
 CLASSES_COUNT = 7
-OUT_SHAPE = CLASSES_COUNT
+
