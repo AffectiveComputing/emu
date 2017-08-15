@@ -16,9 +16,8 @@ __author__ = ["Paweł Kopeć"]
 
 
 class EmuWindow(QMainWindow):
-    __EMOTIONS = ["Contempt", "Fear", "Happiness", "Disgust", "Sadness",
-                  "Anger", "Surprise"]
-
+    __EMOTIONS = ["Anger", "Disgust", "Fear", "Happiness", "Sadness",
+                  "Surprise", "Neutral"]
     __CASCADE_PATH = "data/cascades/haarcascade_frontalface_default.xml"
 
     def __init__(self):
