@@ -16,6 +16,11 @@ __author__ = ["Paweł Kopeć"]
 
 
 class EmuWindow(QMainWindow):
+    """
+    Main class that handles graphical interface of a machine learning model
+    and preprocessing of images to be classified.
+    """
+
     __EMOTIONS = ["Contempt", "Fear", "Happiness", "Disgust", "Sadness",
                   "Anger", "Surprise"]
 

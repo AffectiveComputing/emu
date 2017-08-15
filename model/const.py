@@ -1,3 +1,8 @@
+"""
+This module contains all necessary constants needed for building and training
+the model.
+"""
+
 DATA_SET_DIR = "data/dataset/fer2013.csv"
 META_FILE = "data/logs/best_model/model.meta"
 MODEL_FILE = "data/logs/best_model/model"

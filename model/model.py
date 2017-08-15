@@ -14,6 +14,10 @@ __author__ = ["Paweł Kopeć", "Michał Górecki"]
 
 
 class Model(object):
+    """
+    A class that encapsulates all Tensorflow graph and necessary logging and
+    saving graph to a file required for its training.
+    """
 
     def __init__(self, net_architecture):
         # Flag for lazy initialization in case model
@@ -31,9 +35,10 @@ class Model(object):
         self.__create_environment()
 
     def train(
-        self, data_set, learning_rate, desired_loss, max_epochs,
-            decay_interval, decay_rate, batch_size, save_interval,
-            best_save_interval, validation_interval
+        self, data_set, learning_rate=0.001, desired_loss=0.001,
+            max_epochs=1000000, decay_interval=10, decay_rate=0.99,
+            batch_size=100, save_interval=5,best_save_interval=20,
+            validation_interval=20
     ):
         self.__prepare_for_training()
         self.__session.run(tf.global_variables_initializer())
