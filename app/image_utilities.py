@@ -1,6 +1,6 @@
 """
-This module contains image transformations, conversions and checks. It also
-contains face detection and extraction routines.
+This module contains helpful image transformations and also face detection and
+extraction routines based on OpenCV.
 """
 
 import cv2

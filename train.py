@@ -31,7 +31,7 @@ def main():
     model = Model(layers)
     model.logs = True
     data_set = DataSet(DATA_SET_DIR)
-    model.train(data_set, 0.003, 0.001, 100000, 5, 0.99, 100, 5, 20, 20)
+    model.train(data_set, learning_rate=0.001)
 
 
 if __name__ == "__main__":

@@ -8,6 +8,27 @@ This project's goal is to quickly classify 7 basic human emotions (anger, contem
 <img align="center" src="https://user-images.githubusercontent.com/23619157/28232700-7b395b88-68f2-11e7-982f-72e109b2191d.png" width="80%">
 </p>
 
+Project Structure
+---
+
+```
+|-- app
+|-- data
+|   |-- cascades
+|   |-- dataset
+|   |-- logs
+|-- model
+|-- emu.py
+|-- train.py
+```
+
+* ```app``` - modules responsible for gui.
+* ```data/cascades``` - contains OpenCV face detection cascade files.
+* ```data/dataset``` - this is where the dataset in .csv format should go.
+* ```data/logs``` - logs generated in the training will go here.
+* ```model``` - scripts related to network's model .
+* ```emu.py``` - main gui script. 
+* ```train.py``` - entry point for training.
 
 Setup
 ---
@@ -25,6 +46,8 @@ If your machine does not support CUDA.
 pip3 install tensorflow numpy PyQt5
 ```
 In case of trouble with installation of Tensorflow go [here](https://www.tensorflow.org/install/).
+
+The application also requires cv2 module. Refer to these [tutorials](http://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_setup/py_table_of_contents_setup/py_table_of_contents_setup.html) for guidelines regarding the OpenCV installation.
 
 #### Application
 

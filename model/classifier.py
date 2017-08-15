@@ -6,8 +6,8 @@ __author__ = ["Michał Górecki", "Paweł Kopeć"]
 
 class Classifier:
     """
-    A class for inferring the class without initializing graph nodes needed
-    only for training.
+    A class for inferring the class without initializing those graph nodes
+    that are needed only for training.
     """
 
     INPUT_SIZE = (48, 48)

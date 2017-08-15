@@ -1,7 +1,3 @@
-"""
-This module contains definition of the data set object.
-"""
-
 import numpy as np
 import pandas as pd
 
@@ -12,8 +8,8 @@ class DataSet(object):
     # TODO handling errors
 
     """
-    Object which handles train, validation and test subsets, shuffles the data
-    and rewinds it after all the data has been served.
+    Class which handles serving, shuffling and rewinding train, validation and
+    test subsets of data set.
     """
 
     def __init__(self, csv_path, subsets_sizes=(0.8, 0.1, 0.1)):
