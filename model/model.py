@@ -2,15 +2,33 @@
 This module is responsible for model control.
 """
 
+from os import path, makedirs
 
 import numpy as np
 import tensorflow as tf
-from os import path, makedirs
 
-from model.const import *
 from model.net import net
 
 __author__ = ["Paweł Kopeć", "Michał Górecki"]
+
+DATA_SET_DIR = "data/dataset/fer2013.csv"
+META_FILE = "data/logs/best_model/model.meta"
+MODEL_FILE = "data/logs/best_model/model"
+CHECKPOINTS_FILE = "data/logs/checkpoints/model"
+TRAIN_LOG_DIR = "data/logs/train"
+VALIDATION_LOG_DIR = "data/logs/train"
+
+# Directories that must exist before the training of a model.
+DIRS_TO_ENSURE = [
+    "data/logs/best_model/",
+    "data/logs/checkpoints/model/",
+    "data/logs/train/"
+]
+
+INPUT_SIZE = (48, 48)
+IN_SHAPE = (None,) + INPUT_SIZE + (1,)
+
+CLASSES_COUNT = 7
 
 
 class Model(object):
@@ -35,9 +53,9 @@ class Model(object):
         self.__create_environment()
 
     def train(
-        self, data_set, learning_rate=0.001, desired_loss=0.001,
+            self, data_set, learning_rate=0.001, desired_loss=0.001,
             max_epochs=1000000, decay_interval=10, decay_rate=0.99,
-            batch_size=100, save_interval=5,best_save_interval=20,
+            batch_size=100, save_interval=5, best_save_interval=20,
             validation_interval=20
     ):
         self.__prepare_for_training()

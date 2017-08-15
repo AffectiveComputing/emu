@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import QMainWindow, QPushButton, \
 from app.image_utilities import load_cascade, \
     extract_faces, convert_to_colorspace
 from model.classifier import Classifier
-from model.const import MODEL_FILE, META_FILE
+from model.model import INPUT_SIZE
 
 __author__ = ["Paweł Kopeć"]
 
@@ -35,7 +35,7 @@ class EmuWindow(QMainWindow):
         self.__init_buttons()
 
     def __init_model(self):
-        self.__classifier = Classifier(MODEL_FILE, META_FILE)
+        self.__classifier = Classifier()
         self.__cascade = load_cascade(self.__CASCADE_PATH)
         self.__input = None
         # TODO error message
@@ -107,7 +107,7 @@ class EmuWindow(QMainWindow):
 
                 # Set input for the neural net.
                 self.__input = convert_to_colorspace([faces[0]], "grayscale")[0]
-                self.__input = cv2.resize(self.__input, Classifier.INPUT_SIZE)
+                self.__input = cv2.resize(self.__input, INPUT_SIZE)
                 self.__input = np.expand_dims(self.__input, -1)
             except Exception as e:
                 # TODO label with error messages

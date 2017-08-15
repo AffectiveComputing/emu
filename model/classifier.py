@@ -1,5 +1,6 @@
 import tensorflow as tf
 
+from model.model import MODEL_FILE, META_FILE
 
 __author__ = ["Michał Górecki", "Paweł Kopeć"]
 
@@ -10,9 +11,7 @@ class Classifier:
     that are needed only for training.
     """
 
-    INPUT_SIZE = (48, 48)
-
-    def __init__(self, model_path, meta_path):
+    def __init__(self, model_path=MODEL_FILE, meta_path=META_FILE):
         # Setup environment.
         self.__session = tf.Session()
         saver = tf.train.import_meta_graph(meta_path)
