@@ -68,7 +68,7 @@ def load_cascade(path):
     return cv2.CascadeClassifier(path)
 
 
-def detect_faces(cascade, image, scale_factor, min_neighbours):
+def detect_faces(image, cascade, scale_factor, min_neighbours):
     """
     Detect faces visible on the image.
     :param cascade: cascade object used for detection
@@ -94,7 +94,7 @@ def extract_faces(image, cascade=load_cascade(CASCADE_FILE), scale_factor=1.05,
     gray_image = image if is_grayscale(image) else to_grayscale(image)
     # Detect faces on it.
     faces_rectangles = detect_faces(
-        cascade, gray_image, scale_factor, min_neighbours
+        gray_image, cascade, scale_factor, min_neighbours
     )
     # Crop them out and return as a list.
     faces = []
@@ -103,7 +103,7 @@ def extract_faces(image, cascade=load_cascade(CASCADE_FILE), scale_factor=1.05,
     return faces
 
 
-def convert_to_colorspace(images, color_space):
+def convert_to_colorspace(images, color_space="rgb"):
     """
     Convert list of input images to the target colorspace
     :param images: list of images to convert
