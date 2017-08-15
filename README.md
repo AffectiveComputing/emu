@@ -26,6 +26,8 @@ pip3 install tensorflow numpy PyQt5
 ```
 In case of trouble with installation of Tensorflow go [here](https://www.tensorflow.org/install/).
 
+The application also requires cv2 module. Refer to these [tutorials](http://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_setup/py_table_of_contents_setup/py_table_of_contents_setup.html) for guidelines regarding the OpenCV installation.
+
 #### Application
 
 If you want to quickly launch gui application.
