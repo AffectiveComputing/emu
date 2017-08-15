@@ -30,3 +30,6 @@ class Classifier:
         return self.__session.run(
             self.__scores, feed_dict={self.__in_data: x}
         )
+
+    def close(self):
+        self.__session.close()
