@@ -13,29 +13,30 @@ Project Structure
 
 ```
 |-- app
+|-- model
 |-- data
 |   |-- cascades
 |   |-- dataset
 |   |-- logs
-|-- model
 |-- emu.py
 |-- train.py
 ```
 
-* ```app``` - modules responsible for gui.
-* ```data/cascades``` - contains OpenCV face detection cascade files.
-* ```data/dataset``` - this is where the dataset in .csv format should go.
-* ```data/logs``` - logs generated in the training will go here.
-* ```model``` - scripts related to network's model .
-* ```emu.py``` - main gui script. 
-* ```train.py``` - entry point for training.
+* ```app``` - package for GUI app
+* ```model``` - package for building and training model
+* ```data/cascades``` - directory for OpenCV cascade needed for face 
+detection
+* ```data/dataset``` - directory where the you should unpack [FER-2013 dataset](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data) 
+* ```data/logs``` - directory for all outputs of training
+* ```emu.py``` - main GUI application script
+* ```train.py``` - main training script
 
 Setup
 ---
 
 First make sure you have [Python 3.5 or newer](https://www.python.org/downloads/).
 
-#### Packages
+#### Dependencies
 
 Install required packages.
 ```
@@ -60,9 +61,9 @@ python3 emu.py
 
 If you want to train your own model.
 
-1. Download and unpack [FER-2013 database](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data) to /data/dataset.
+1. Download and unpack [FER-2013 database](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data) to /data/dataset directory.
 
-2. Train the model.
+2. Run the script to train the model.
 
 ```
 python3 train.py
