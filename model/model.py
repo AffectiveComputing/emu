@@ -16,7 +16,7 @@ META_FILE = "data/logs/best_model/model.meta"
 MODEL_FILE = "data/logs/best_model/model"
 CHECKPOINTS_FILE = "data/logs/checkpoints/model"
 TRAIN_LOG_DIR = "data/logs/train"
-VALIDATION_LOG_DIR = "data/logs/train"
+VALIDATION_LOG_DIR = "data/logs/validation"
 
 # Directories that must exist before the training of a model.
 DIRS_TO_ENSURE = [
@@ -55,7 +55,7 @@ class Model(object):
     def train(
             self, data_set, learning_rate=0.001, desired_loss=0.001,
             max_epochs=1000000, decay_interval=10, decay_rate=0.99,
-            batch_size=100, save_interval=5, best_save_interval=20,
+            batch_size=100, save_interval=100, best_save_interval=20,
             validation_interval=20
     ):
         self.__prepare_for_training()
