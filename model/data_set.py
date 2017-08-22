@@ -71,18 +71,10 @@ class DataSet(object):
 
         :return: loaded images matrix and labels vector
         """
-
-        def str_to_img(string):
-            return (np.fromstring(string, dtype=np.uint8, sep=" ")
-                    .reshape((48, 48, 1))
-                    / np.iinfo(np.uint8).max)
-
-        data = pd.read_csv(csv_path)
-        images = np.array(data["pixels"].apply(str_to_img).values.tolist())
-        labels = data["emotion"].values
+        images = np.load('data/dataset/images.npy')
+        labels = np.load('data/dataset/labels.npy')
 
         return images, labels
-
 
     def __split_data_set(self, images, labels, subsets_sizes):
         """
