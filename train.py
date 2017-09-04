@@ -20,6 +20,22 @@ def main():
             "kernel_size": 5,
         },
         {
+            "type": "pool"
+        },
+        {
+            "type": "conv",
+            "filters_count": 256,
+            "kernel_size": 5,
+        },
+        {
+            "type": "pool"
+        },
+        {
+            "type": "conv",
+            "filters_count": 512,
+            "kernel_size": 5,
+        },
+        {
             "type": "deep",
             "out_size": 100
         },
@@ -31,7 +47,7 @@ def main():
     model = Model(layers)
     model.logs = True
     data_set = DataSet(DATA_SET_DIR)
-    model.train(data_set, learning_rate=0.001, decay_rate=1.0)
+    model.train(data_set, learning_rate=0.001, decay_rate=1.0, batch_size=100)
 
 
 if __name__ == "__main__":

@@ -8,6 +8,7 @@ import numpy as np
 import tensorflow as tf
 
 from model.net import net
+from model.data_set import DataSet
 
 __author__ = ["Paweł Kopeć", "Michał Górecki"]
 
@@ -56,14 +57,14 @@ class Model(object):
             self, data_set, learning_rate=0.001, desired_loss=0.001,
             max_epochs=1000000, decay_interval=10, decay_rate=0.99,
             batch_size=100, save_interval=100, best_save_interval=20,
-            validation_interval=20
+            validation_interval=200
     ):
         self.__prepare_for_training()
         self.__session.run(tf.global_variables_initializer())
         min_loss = -np.log(1 / CLASSES_COUNT)
         for epoch in range(max_epochs):
             # Obtain training data batch.
-            data, labels = data_set.next_train_batch(batch_size)
+            data, labels = data_set.next_batch(batch_size, DataSet.TRAIN_I)
             # Perform train run.
             _, current_loss, accuracy_value, summary_out = self.__session.run(
                 [self.__train, self.__loss, self.__accuracy, self.__summary],
@@ -80,21 +81,38 @@ class Model(object):
             self.__train_writer.add_summary(summary_out, global_step=epoch)
             # Perform validation run every 'validation interval' steps.
             if epoch % validation_interval == 0:
-                data, labels = data_set.validation_batch()
-                current_loss, accuracy_value, summary_out = self.__session.run(
-                    [self.__loss, self.__accuracy, self.__summary],
+                losses = []
+                accuracies = []
+                loops_count = (data_set._DataSet__images[DataSet.VALIDATION_I].shape[0]
+                               // batch_size)
+                for i in range(loops_count):
+                    data, labels = data_set.next_batch(batch_size,
+                                                       DataSet.VALIDATION_I)
+                    current_loss, accuracy_value = self.__session.run(
+                        [self.__loss, self.__accuracy],
+                        feed_dict={
+                            self.__in_data: data,
+                            self.__in_labels: labels,
+                            self.__in_learning_rate: learning_rate,
+                        }
+                    )
+                    losses.append(current_loss)
+                    accuracies.append(accuracy_value)
+                mean_loss = np.mean(losses)
+                mean_accuracy = np.mean(accuracies)
+                output_log_to_console(
+                    "validation", epoch, mean_loss,
+                    mean_accuracy, learning_rate
+                )
+                validation_summary, = self.__session.run(
+                    [self.__validation_summary],
                     feed_dict={
-                        self.__in_data: data,
-                        self.__in_labels: labels,
-                        self.__in_learning_rate: learning_rate,
+                        self.__loss_placeholder: mean_loss,
+                        self.__accuracy_placeholder: mean_accuracy
                     }
                 )
-                output_log_to_console(
-                    "validation", epoch, current_loss,
-                    accuracy_value, learning_rate
-                )
                 self.__validation_writer.add_summary(
-                    summary_out, global_step=epoch
+                    validation_summary, global_step=epoch
                 )
             # Decay the learning rate every 'decay_interval' steps.
             if epoch % decay_interval == 0:
@@ -156,9 +174,19 @@ class Model(object):
         ).minimize(self.__loss)
 
     def __create_summary(self):
-        tf.summary.scalar("loss", self.__loss)
-        tf.summary.scalar("accuracy", self.__accuracy)
-        self.__summary = tf.summary.merge_all()
+        self.__loss_placeholder = tf.placeholder(tf.float32, [])
+        self.__accuracy_placeholder = tf.placeholder(tf.float32, [])
+        loss_summary = tf.summary.scalar("loss", self.__loss)
+        accuracy_summary = tf.summary.scalar("accuracy", self.__accuracy)
+        validation_loss_summary = tf.summary.scalar("validation_loss",
+                                                    self.__loss_placeholder)
+        validation_accuracy_summary = tf.summary.scalar(
+            "validation_accuracy", self.__accuracy_placeholder
+        )
+        self.__summary = tf.summary.merge([loss_summary, accuracy_summary])
+        self.__validation_summary = tf.summary.merge(
+            [validation_loss_summary, validation_accuracy_summary]
+        )
 
 
 def output_log_to_console(run_type, epoch, loss, accuracy, learning_rate):
