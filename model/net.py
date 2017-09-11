@@ -1,7 +1,6 @@
 import numpy as np
 import tensorflow as tf
 
-__author__ = ["Michał Górecki", "Paweł Kopeć"]
 
 DEFAULT_FILTERS_COUNT = 1
 DEFAULT_KERNEL_SIZE = 5

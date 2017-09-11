@@ -1,8 +1,12 @@
+""" This module contains infer capable class. """
+
+
+from os import path
+
 import tensorflow as tf
 
-from model.model import MODEL_FILE, META_FILE
-
-__author__ = ["Michał Górecki", "Paweł Kopeć"]
+from model.model import Model
+from utils.dirs_utils import LOGS_ROOT, BEST_MODEL_DIR
 
 
 class Classifier:
@@ -11,24 +15,22 @@ class Classifier:
     that are needed only for training.
     """
 
-    def __init__(self, model_path=MODEL_FILE, meta_path=META_FILE):
-        # Setup environment.
-        self.__session = tf.Session()
-        saver = tf.train.import_meta_graph(meta_path)
-        saver.restore(self.__session, model_path)
-        self.__in_data = tf.get_collection("in_data")[0]
-        self.__scores = tf.get_collection("scores")[0]
+    def __init__(self, data_root, run_name):
+        """ Setup environment. """
+        best_model_root = path.join(
+            path.join(path.join(data_root, LOGS_ROOT), run_name), BEST_MODEL_DIR
+        )
+        meta_file_path = path.join(best_model_root, Model.META_FILENAME)
+        model_file_path = path.join(best_model_root, Model.MODEL_FILENAME)
+        self._session = tf.Session()
+        saver = tf.train.import_meta_graph(meta_file_path)
+        saver.restore(self._session, model_file_path)
+        self._in_data = tf.get_collection(Model.IN_DATA_NAME)[0]
+        self._scores = tf.get_collection(Model.SCORES_NAME)[0]
 
     def infer(self, x):
-        """
-
-        :param x:           input placeholder
-        :param model_path:   directory with model files
-        :return:
-        """
-        return self.__session.run(
-            self.__scores, feed_dict={self.__in_data: x}
-        )
+        """ Feed froward x through the loaded net. """
+        return self._session.run(self._scores, feed_dict={self._in_data: x})
 
     def close(self):
-        self.__session.close()
+        self._session.close()
