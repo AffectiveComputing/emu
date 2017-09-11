@@ -63,7 +63,14 @@ If you want to train your own model.
 
 1. Download and unpack [FER-2013 database](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data) to /data/dataset directory.
 
-2. Run the script to train the model.
+2. Before you run the training for the first time, remember to preprocess the
+ data.
+
+```
+python3 preprocess.py
+```
+
+3. Run the script to train the model.
 
 ```
 python3 train.py
