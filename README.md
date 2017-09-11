@@ -19,6 +19,7 @@ Project Structure
 |   |-- dataset
 |   |-- logs
 |-- emu.py
+|-- preprocess.py
 |-- train.py
 ```
 
@@ -29,6 +30,7 @@ detection
 * ```data/dataset``` - directory where the you should unpack [FER-2013 dataset](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data) 
 * ```data/logs``` - directory for all outputs of training
 * ```emu.py``` - main GUI application script
+* ```preprocess.py``` - main data preprocessing script
 * ```train.py``` - main training script
 
 Setup
