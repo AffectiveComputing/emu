@@ -32,7 +32,7 @@ class EmuWindow(QMainWindow):
         self.__init_buttons()
 
     def __init_model(self):
-        self.__classifier = Classifier("data", "run_1")
+        self.__classifier = Classifier("data", "run_13")
         self.__cascade = load_cascade(self.__CASCADE_PATH)
         self.__input = None
         # TODO error message
