@@ -6,10 +6,10 @@ DEFAULT_FILTERS_COUNT = 1
 DEFAULT_KERNEL_SIZE = 5
 DEFAULT_POOL_SIZE = 2
 DEFAULT_STRIDES = 2
-DEFAULT_DEEP_SIZE = 128
+DEFAULT_FC_SIZE = 128
 
 
-def net(x, layers):
+def net(in_data, layers, fc_dropout, conv_dropout):
     """
     Build neural net of architecture described in layers list. Layers types
     include convolutional, pool and feed-forward (deep) layers, eg.:
@@ -26,6 +26,7 @@ def net(x, layers):
     :param layers:  list of dicts describing layers
     :return:        output variable of a net
     """
+    x = in_data
 
     # build convolutional and pool layers
     for i, layer in enumerate(layers):
@@ -51,6 +52,12 @@ def net(x, layers):
                 pool_size=poll_size,
                 strides=strides
             )
+            print(x.shape)
+            x = tf.nn.dropout(
+                x, 1 - conv_dropout,
+                noise_shape=[tf.shape(x)[0], 1, 1, tf.shape(x)[-1]]
+            )
+            print(x.shape)
         else:
             break
 
@@ -63,39 +70,22 @@ def net(x, layers):
         in_size = np.product(x_shape[1:])
         x = tf.reshape(x, [-1, in_size])
 
-    # build deep layers
     for j, layer in enumerate(layers[i:]):
-        out_size = layer.get("out_size") or DEFAULT_DEEP_SIZE
-        x = deep_layers(x, in_size, out_size, j)
-        in_size = out_size
+        x = build_fc_layer("fc_{}".format(j), x, in_size, layer["out_size"],
+                           fc_dropout, j == len(layers[i:]) - 1)
+        in_size = layer.get("out_size", DEFAULT_FC_SIZE)
 
     return x
 
 
-def deep_layers(x, in_size, out_size, index):
-    """
-    Build deep layers on the top of previous output.
-
-    :param x:           input placeholder
-    :param in_size:     size of output of previous layer
-    :param out_size:    size of output of current layer
-    :param index:       number needed for naming tf variables
-    :return:            output variable of a net
-    """
-    x = tf.nn.relu(x)
-
-    # weights
-    W = tf.get_variable(
-        "W" + str(index),
-        shape=[in_size, out_size],
-        initializer=tf.contrib.layers.xavier_initializer()
-    )
-
-    # bias
-    b = tf.get_variable(
-        "b" + str(index),
-        shape=[out_size, ],
-        initializer=tf.constant_initializer()
-    )
-
-    return tf.matmul(x, W) + b
+def build_fc_layer(name, in_data, in_size, out_size, dropout, is_out):
+    """ Build a fc layer on the top of previous output. """
+    with tf.variable_scope(name):
+        W = tf.get_variable("W", shape=[in_size, out_size],
+                            initializer=tf.contrib.layers.xavier_initializer())
+        b = tf.get_variable("b", shape=[out_size, ],
+                            initializer=tf.constant_initializer())
+    if not is_out:
+        return tf.nn.dropout(tf.nn.relu(tf.matmul(in_data, W) + b), 1 - dropout)
+    else:
+        return tf.matmul(in_data, W) + b

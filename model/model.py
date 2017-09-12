@@ -53,14 +53,16 @@ class Model(object):
             self, dataset, learning_rate=0.001, desired_loss=0.001,
             max_epochs=1000000, decay_interval=10, decay_rate=1.0,
             batch_size=100, save_interval=1000, best_save_interval=200,
-            validation_interval=200
+            validation_interval=200, fc_dropout=0.5, conv_dropout=0.25
     ):
         """ Public entry method for model's training. """
         self._session.run(tf.global_variables_initializer())
         min_loss = -np.log(1 / self.CLASSES_COUNT)
         for epoch in range(max_epochs):
-            train_loss_out = self._do_train_run(epoch, dataset, batch_size,
-                                                learning_rate)
+            train_loss_out = self._do_train_run(
+                epoch, dataset, batch_size, learning_rate, fc_dropout,
+                conv_dropout
+            )
             if epoch % validation_interval == 0:
                 val_loss_out = self._do_val_run(epoch, dataset, batch_size,
                                                 learning_rate)
@@ -78,13 +80,16 @@ class Model(object):
             if train_loss_out < desired_loss:
                 break
 
-    def _do_train_run(self, epoch, dataset, batch_size, learning_rate):
+    def _do_train_run(self, epoch, dataset, batch_size, learning_rate,
+                      fc_dropout, conv_dropout):
         """ Perform single train run. """
         data, labels = dataset.next_batch(batch_size, Dataset.TRAIN_I)
         _, loss_out, accuracy_out, train_summary_out = self._session.run(
             [self._train, self._loss, self._accuracy, self._train_summary],
             feed_dict={self._in_data: data, self._in_labels: labels,
-                       self._in_learning_rate: learning_rate}
+                       self._in_learning_rate: learning_rate,
+                       self._in_fc_dropout: fc_dropout,
+                       self._in_conv_dropout: conv_dropout}
         )
         self._output_log_to_console("train", epoch, loss_out,
                                     accuracy_out, learning_rate)
@@ -100,7 +105,8 @@ class Model(object):
             data, labels = dataset.next_batch(batch_size, Dataset.VALIDATION_I)
             loss_out, accuracy_out = self._session.run(
                 [self._loss, self._accuracy],
-                feed_dict={self._in_data: data, self._in_labels: labels}
+                feed_dict={self._in_data: data, self._in_labels: labels,
+                           self._in_fc_dropout: 0.0, self._in_conv_dropout: 0.0}
             )
             losses.append(loss_out)
             accuracies.append(accuracy_out)
@@ -122,10 +128,13 @@ class Model(object):
         tf.add_to_collection(self.IN_DATA_NAME, self._in_data)
         self._in_labels = tf.placeholder(tf.int64, [None, ])
         self._in_learning_rate = tf.placeholder(tf.float32, [])
+        self._in_fc_dropout = tf.placeholder(tf.float32, [])
+        self._in_conv_dropout = tf.placeholder(tf.float32, [])
 
     def _create_output_nodes(self, net_architecture):
         """ Initialize model's output nodes. """
-        self._output = net(self._in_data, net_architecture)
+        self._output = net(self._in_data, net_architecture, self._in_fc_dropout,
+                           self._in_conv_dropout)
         self._predictions = tf.argmax(self._output, axis=1)
         self._scores = tf.nn.softmax(self._output)
         tf.add_to_collection(self.SCORES_NAME, self._scores)
