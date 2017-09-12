@@ -30,6 +30,8 @@ class Model(object):
 
     # Names for exported model's nodes.
     IN_DATA_NAME = "in_data"
+    IN_FC_DROPOUT_NAME = "in_fc_dropout"
+    IN_CONV_DROPOUT_NAME = "in_conv_dropout"
     SCORES_NAME = "scores"
 
     # Filenames for saved model's files.
@@ -129,7 +131,9 @@ class Model(object):
         self._in_labels = tf.placeholder(tf.int64, [None, ])
         self._in_learning_rate = tf.placeholder(tf.float32, [])
         self._in_fc_dropout = tf.placeholder(tf.float32, [])
+        tf.add_to_collection(self.IN_FC_DROPOUT_NAME, self._in_fc_dropout)
         self._in_conv_dropout = tf.placeholder(tf.float32, [])
+        tf.add_to_collection(self.IN_CONV_DROPOUT_NAME, self._in_conv_dropout)
 
     def _create_output_nodes(self, net_architecture):
         """ Initialize model's output nodes. """

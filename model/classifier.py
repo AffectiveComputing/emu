@@ -26,11 +26,17 @@ class Classifier:
         saver = tf.train.import_meta_graph(meta_file_path)
         saver.restore(self._session, model_file_path)
         self._in_data = tf.get_collection(Model.IN_DATA_NAME)[0]
+        self._in_fc_dropout = tf.get_collection(Model.IN_FC_DROPOUT_NAME)[0]
+        self._in_conv_dropout = tf.get_collection(Model.IN_CONV_DROPOUT_NAME)[0]
         self._scores = tf.get_collection(Model.SCORES_NAME)[0]
 
     def infer(self, x):
         """ Feed froward x through the loaded net. """
-        return self._session.run(self._scores, feed_dict={self._in_data: x})
+        return self._session.run(
+            self._scores,
+            feed_dict={self._in_data: x, self._in_fc_dropout: 0.0,
+                       self._in_conv_dropout: 0.0}
+        )
 
     def close(self):
         self._session.close()
