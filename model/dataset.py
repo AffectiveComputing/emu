@@ -1,8 +1,5 @@
 """ This module contains main Dataset class. """
 
-
-from os import path
-
 import numpy as np
 
 
@@ -38,10 +35,10 @@ class Dataset(object):
             self._batches_is[set_i] = 0
         images = self._images[set_i][
                  self._batches_is[set_i]:self._batches_is[set_i] + size
-        ]
+                 ]
         labels = self._labels[set_i][
                  self._batches_is[set_i]:self._batches_is[set_i] + size
-        ]
+                 ]
         self._batches_is[set_i] += size
         return images, labels
 
