@@ -21,6 +21,8 @@ class EmuWindow(QMainWindow):
     __EMOTIONS = ["Anger", "Disgust", "Fear", "Happiness", "Sadness",
                   "Surprise", "Neutral"]
     __CASCADE_PATH = "data/cascades/haarcascade_frontalface_default.xml"
+    __META_PATH = "data/gui_model/model.meta"
+    __MODEL_PATH = "data/gui_model/model"
 
     def __init__(self):
         super().__init__()
@@ -32,7 +34,7 @@ class EmuWindow(QMainWindow):
         self.__init_buttons()
 
     def __init_model(self):
-        self.__classifier = Classifier("data", "run_13")
+        self.__classifier = Classifier(self.__META_PATH, self.__MODEL_PATH)
         self.__cascade = load_cascade(self.__CASCADE_PATH)
         self.__input = None
         # TODO error message

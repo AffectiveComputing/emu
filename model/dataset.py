@@ -19,14 +19,9 @@ class Dataset(object):
     VALIDATION_I = 1
     TEST_I = 2
 
-    # Constant paths.
-    DATASETS_ROOT = "datasets"
-    IMAGES_FILENAME = "images.npy"
-    LABELS_FILENAME = "labels.npy"
-
-    def __init__(self, data_root, dataset_name, subsets_sizes=(0.8, 0.1, 0.1)):
-        images_path, labels_path = self._get_paths(data_root, dataset_name)
-        images, labels = self._load_dataset(images_path, labels_path)
+    def __init__(self, images_path, labels_path, subsets_sizes=(0.8, 0.1, 0.1)):
+        images = np.load(images_path)
+        labels = np.load(labels_path)
         self._split_dataset(images, labels, subsets_sizes)
         self._batches_is = [0, 0, 0]
 
@@ -82,19 +77,3 @@ class Dataset(object):
         for indices in [train_indices, validation_indices, test_indices]:
             self._images.append(images[indices])
             self._labels.append(labels[indices])
-
-    @staticmethod
-    def _get_paths(data_root, dataset_name):
-        """ Generate images and labels file paths from given dataset name. """
-        dataset_root = path.join(path.join(data_root, Dataset.DATASETS_ROOT),
-                                 dataset_name)
-        images_path = path.join(dataset_root, Dataset.IMAGES_FILENAME)
-        labels_path = path.join(dataset_root, Dataset.LABELS_FILENAME)
-        return images_path, labels_path
-
-    @staticmethod
-    def _load_dataset(images_path, labels_path):
-        """ Load images and labels from given files paths. """
-        images = np.load(images_path)
-        labels = np.load(labels_path)
-        return images, labels
