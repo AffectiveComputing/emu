@@ -5,7 +5,10 @@ Emu (in progress)
 
 This project's goal is to quickly classify 7 basic human emotions (anger, contempt, fear, disgust, happiness, sadness, surprise) by picture of a human face. Our main goal is to help in research and treatment of autism, but possible applications of Emu in industry are endless.
 <p align="center">
-<img align="center" src="https://user-images.githubusercontent.com/23619157/28232700-7b395b88-68f2-11e7-982f-72e109b2191d.png" width="80%">
+<img align="center" src="https://user-images.githubusercontent.com/23619157/30515739-b5e55c88-9b2d-11e7-81d0-836cf2013790.png" width="80%">
+<img align="center" src="https://user-images.githubusercontent.com/23619157/30515740-b5e68888-9b2d-11e7-9fc9-56d379358279.png" width="80%">
+<img align="center" src="https://user-images.githubusercontent.com/23619157/30515741-b5e7e2d2-9b2d-11e7-8473-d0ca0887e36d.png" width="80%">
+<img align="center" src="https://user-images.githubusercontent.com/23619157/30515742-b5e973c2-9b2d-11e7-9fb6-6e9239948100.png" width="80%">
 </p>
 
 Project Structure
